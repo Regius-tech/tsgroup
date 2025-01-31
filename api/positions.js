@@ -2,30 +2,41 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 const fs = require('fs');
 const path = require('path');
 
+console.log('Starting function...'); // Debugging
+
 // Load vehicles.json
-const vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'vehicles.json'), 'utf8'));
+try {
+    console.log('Loading vehicles.json...'); // Debugging
+    const vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'vehicles.json'), 'utf8'));
+    console.log('vehicles.json loaded successfully:', vehiclesData); // Debugging
+} catch (error) {
+    console.error('Error loading vehicles.json:', error); // Debugging
+    throw error; // Rethrow to crash the function and log the error
+}
 
 // API configurations
 const apiConfigurations = [
     {
         url: process.env.API_URL_1,
         apiKey: process.env.API_KEY_1,
-        logo: '/logo1.png', // Relative to the public folder
+        logo: '/logo1.png',
         company: 'Transportsentralen Oslo',
     },
     {
         url: process.env.API_URL_2,
         apiKey: process.env.API_KEY_2,
-        logo: '/logo2.png', // Relative to the public folder
+        logo: '/logo2.png',
         company: 'TS Oslo Budtjenester',
     },
     {
         url: process.env.API_URL_3,
         apiKey: process.env.API_KEY_3,
-        logo: '/logo3.png', // Relative to the public folder
+        logo: '/logo3.png',
         company: 'Moss Transportforum',
     },
 ];
+
+console.log('API configurations:', apiConfigurations); // Debugging
 
 // Helper function to check if a vehicle is active today
 function isActiveToday(vehicle) {
@@ -38,6 +49,7 @@ function isActiveToday(vehicle) {
 
 module.exports = async (req, res) => {
     try {
+        console.log('Fetching vehicle positions...'); // Debugging
         const allPositions = [];
         for (const config of apiConfigurations) {
             console.log(`Fetching data from: ${config.url}`); // Debugging
@@ -64,7 +76,7 @@ module.exports = async (req, res) => {
         console.log('All positions:', allPositions); // Debugging
         res.json(allPositions);
     } catch (error) {
-        console.error('Error fetching vehicle positions:', error);
+        console.error('Error fetching vehicle positions:', error); // Debugging
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
