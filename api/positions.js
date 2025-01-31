@@ -4,14 +4,14 @@ const path = require('path');
 
 console.log('Starting function...'); // Debugging
 
-// Load vehicles.json
+// Load vehicles.json (if it exists)
+let vehiclesData = {};
 try {
     console.log('Loading vehicles.json...'); // Debugging
-    const vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'vehicles.json'), 'utf8'));
+    vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'vehicles.json'), 'utf8'));
     console.log('vehicles.json loaded successfully:', vehiclesData); // Debugging
 } catch (error) {
-    console.error('Error loading vehicles.json:', error); // Debugging
-    throw error; // Rethrow to crash the function and log the error
+    console.warn('vehicles.json not found or invalid. Proceeding without it.'); // Debugging
 }
 
 // API configurations
@@ -68,8 +68,8 @@ module.exports = async (req, res) => {
                 logo: config.logo,
                 company: config.company,
                 isActiveToday: isActiveToday(vehicle),
-                type: vehiclesData[vehicle.number]?.type || 'Unknown',
-                palleplasser: vehiclesData[vehicle.number]?.palleplasser || 'Unknown',
+                type: vehiclesData[vehicle.number]?.type || 'Unknown', // Fallback to 'Unknown' if vehicles.json is missing
+                palleplasser: vehiclesData[vehicle.number]?.palleplasser || 'Unknown', // Fallback to 'Unknown' if vehicles.json is missing
             }));
             allPositions.push(...vehiclesWithLogos);
         }
