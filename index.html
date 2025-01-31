@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triflex Kart</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: calc(100vh - 100px); /* For å lage plass til tittelen og filtreringskontroller */
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            margin: 0;
+            padding: 10px 0;
+            background-color: #FFFFFF;
+            color: white;
+            font-size: 24px;
+        }
+        .filter-container {
+            padding: 20px;
+            background-color: #FFFFFF;
+            display: flex;
+            justify-content: center; /* Sentere innholdet horisontalt */
+            align-items: center; /* Sentere innholdet vertikalt */
+            flex-wrap: wrap;
+            gap: 30px; /* Gap mellom elementene */
+        }
+        .filter-container label {
+            margin-right: 10px;
+        }
+        .leaflet-marker-icon {
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .custom-pin {
+            position: relative;
+            text-align: center;
+        }
+        .custom-pin .pin-logo {
+            background-color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            overflow: hidden;
+            border: 2px solid #014f8a;
+        }
+        .custom-pin .pin-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: center;
+        }
+        .custom-pin .pin-line {
+            width: 2px;
+            height: 20px;
+            background-color: #014f8a;
+            margin: 0 auto;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 200px; /* Gjør dropdown-knappene større */
+        }
+        .dropdown-btn {
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #e6f0f7;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .dropdown-btn:hover {
+            background-color: #d0e0f0;
+        }
+        .dropdown-content {
+            display: none; /* Skjult som standard */
+            position: absolute;
+            top: 110%; /* Plasser menyen under knappen */
+            left: 0;
+            background-color: white;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1000;
+            min-width: 220px;
+            max-height: 300px; /* Begrens høyde */
+            overflow-y: auto; /* Scroll hvis innholdet blir for stort */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .dropdown-content .vehicle-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .dropdown-content .vehicle-item:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown-content input {
+            margin-right: 10px;
+        }
+        .dropdown.open .dropdown-content {
+            display: block; /* Vis innholdet når "open"-klassen legges til */
+        }
+        /* Spesifikk styling for å plassere avmerkingsboksen for aktive biler til høyre */
+        .active-checkbox-container {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+        }
+        .active-checkbox-container label {
+            margin-left: 20px; /* Gap mellom dropdown og aktiv sjekkboks */
+        }
+    </style>
+</head>
+<body>
+<h1>
+    <img src="logo.png" alt="Triflex Logo" style="max-height: 50px;">
+</h1>
+    <div class="filter-container">
+        <!-- Filter for selskapene -->
+        <div class="dropdown" id="dropdown-company1">
+            <div class="dropdown-btn">Transportsentralen Oslo</div>
+            <div class="dropdown-content" id="company1-vehicles"></div>
+        </div>
+        <div class="dropdown" id="dropdown-company2">
+            <div class="dropdown-btn">TS Oslo Budtjenester</div>
+            <div class="dropdown-content" id="company2-vehicles"></div>
+        </div>
+        <div class="dropdown" id="dropdown-company3">
+            <div class="dropdown-btn">Moss Transportforum</div>
+            <div class="dropdown-content" id="company3-vehicles"></div>
+        </div>
+    </div>
+    
+    <!-- Avmerkingsboks for aktive biler plassert til høyre -->
+    <div class="active-checkbox-container">
+        <label><input type="checkbox" id="activeToday" checked> Kun aktive biler i dag</label>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([59.9274, 10.8514], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        function createCustomPinIcon(logoUrl) {
+            return L.divIcon({
+                className: 'custom-pin',
+                html: `<div>
+                        <div class="pin-logo">
+                            <img src="${logoUrl}" alt="Logo">
+                        </div>
+                        <div class="pin-line"></div>
+                    </div>`,
+                iconSize: [30, 50],
+                iconAnchor: [15, 50],
+                popupAnchor: [0, -40]
+            });
+        }
+
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return "Ukjent tid"; // Håndter tomme tidsstempler
+            try {
+                const date = new Date(timestamp);
+                if (!isNaN(date.getTime())) {
+                    return date.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+                }
+                return timestamp.split("T")[1].substring(0, 5); // Henter klokkeslett (hh:mm)
+            } catch (error) {
+                return "Ugyldig tid";
+            }
+        }
+
+        let markers = [];
+        let allVehicles = []; // Holder all data om bilene
+        let vehicleCheckboxStatus = {}; // For å lagre statusen til sjekkboksene
+
+        function filterAndUpdateMarkers() {
+            const activeToday = document.getElementById('activeToday').checked;
+
+            // **Ny logikk for å lagre åpen popup**
+            let openPopupVehicleName = null;
+            const openPopup = map._popup;
+            if (openPopup) {
+                openPopupVehicleName = openPopup.getContent().match(/<b>Navn:<\/b> (.+?)<br>/)?.[1];
+            }
+
+            // Finn alle avhukede kjøretøy
+            const selectedVehicles = allVehicles.filter(vehicle => {
+                const checkbox = document.getElementById(`vehicle-${vehicle.name}`);
+                const isChecked = checkbox ? checkbox.checked : true; // Standard er at den er sjekket
+                const isActiveToday = activeToday ? vehicle.isActiveToday : true;
+                return isChecked && isActiveToday;
+            });
+
+            // Fjern gamle markører
+            markers.forEach(marker => marker.remove());
+            markers = [];
+
+            // Legg til nye markører
+            selectedVehicles.forEach(vehicle => {
+                const vehicleIcon = createCustomPinIcon(vehicle.logo);
+                const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon: vehicleIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <b>Navn:</b> ${vehicle.name}<br>
+                        <b>Fart:</b> ${vehicle.speed} km/h<br>
+                        <b>Klokkeslett:</b> ${formatTimestamp(vehicle.time)}<br>
+                        <b>Type:</b> ${vehicle.type}<br>
+                        <b>Plasser:</b> ${vehicle.palleplasser}<br>
+                        <b>Firma:</b> ${vehicle.company}
+                    `);
+
+                // Sjekk om dette er markøren som hadde popupen åpen
+                if (vehicle.name === openPopupVehicleName) {
+                    marker.openPopup(); // Gjenåpne popup
+                }
+
+                markers.push(marker);
+            });
+        }
+
+        function populateVehicleLists() {
+            const company1List = document.getElementById('company1-vehicles');
+            const company2List = document.getElementById('company2-vehicles');
+            const company3List = document.getElementById('company3-vehicles');
+
+            company1List.innerHTML = '';
+            company2List.innerHTML = '';
+            company3List.innerHTML = '';
+
+            allVehicles.forEach(vehicle => {
+                const item = document.createElement('div');
+                item.className = 'vehicle-item';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `vehicle-${vehicle.name}`;
+
+                // Sett sjekkboksens status basert på lagret verdi
+                checkbox.checked = vehicleCheckboxStatus[vehicle.name] !== undefined ? vehicleCheckboxStatus[vehicle.name] : true;
+
+                checkbox.addEventListener('change', (e) => {
+                    vehicleCheckboxStatus[vehicle.name] = e.target.checked; // Lagre status
+                    filterAndUpdateMarkers(); // Oppdater markører
+                });
+
+                const label = document.createElement('label');
+                label.textContent = vehicle.name;
+
+                item.appendChild(checkbox);
+                item.appendChild(label);
+
+                if (vehicle.company === 'Transportsentralen Oslo') {
+                    company1List.appendChild(item);
+                } else if (vehicle.company === 'TS Oslo Budtjenester') {
+                    company2List.appendChild(item);
+                } else if (vehicle.company === 'Moss Transportforum') {
+                    company3List.appendChild(item);
+                }
+            });
+        }
+
+        document.querySelectorAll('.dropdown-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const dropdown = button.parentElement;
+                dropdown.classList.toggle('open');
+            });
+        });
+
+        function fetchPositions() {
+            fetch('/api/positions')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    allVehicles = data;
+                    populateVehicleLists();
+                    filterAndUpdateMarkers();
+                })
+                .catch(error => console.error('Error fetching vehicle positions:', error));
+        }
+
+        fetchPositions();
+        setInterval(fetchPositions, 10000);
+    </script>
+</body>
+</html>
