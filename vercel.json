@@ -3,7 +3,10 @@
   "builds": [
     {
       "src": "api/positions.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["api/vehicles.json"] // Include vehicles.json
+      }
     },
     {
       "src": "index.html",
