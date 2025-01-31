@@ -5,7 +5,7 @@
       "src": "api/positions.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["api/vehicles.json"] // Include vehicles.json
+        "includeFiles": ["api/vehicles.json"]
       }
     },
     {
