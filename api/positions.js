@@ -3,26 +3,26 @@ const fs = require('fs');
 const path = require('path');
 
 // Load vehicles.json
-const vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, '../vehicles.json'), 'utf8'));
+const vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'vehicles.json'), 'utf8'));
 
 // API configurations
 const apiConfigurations = [
     {
         url: process.env.API_URL_1,
         apiKey: process.env.API_KEY_1,
-        logo: '/public/logo1.png',
+        logo: '/logo1.png', // Relative to the public folder
         company: 'Transportsentralen Oslo',
     },
     {
         url: process.env.API_URL_2,
         apiKey: process.env.API_KEY_2,
-        logo: '/public/logo2.png',
+        logo: '/logo2.png', // Relative to the public folder
         company: 'TS Oslo Budtjenester',
     },
     {
         url: process.env.API_URL_3,
         apiKey: process.env.API_KEY_3,
-        logo: '/public/logo3.png',
+        logo: '/logo3.png', // Relative to the public folder
         company: 'Moss Transportforum',
     },
 ];
@@ -40,6 +40,7 @@ module.exports = async (req, res) => {
     try {
         const allPositions = [];
         for (const config of apiConfigurations) {
+            console.log(`Fetching data from: ${config.url}`); // Debugging
             const response = await fetch(config.url, {
                 method: 'GET',
                 headers: { 'x-api-key': config.apiKey },
@@ -49,6 +50,7 @@ module.exports = async (req, res) => {
                 continue;
             }
             const data = await response.json();
+            console.log(`Data fetched from ${config.url}:`, data); // Debugging
             const vehiclesWithLogos = data.map(vehicle => ({
                 ...vehicle,
                 logo: config.logo,
@@ -59,6 +61,7 @@ module.exports = async (req, res) => {
             }));
             allPositions.push(...vehiclesWithLogos);
         }
+        console.log('All positions:', allPositions); // Debugging
         res.json(allPositions);
     } catch (error) {
         console.error('Error fetching vehicle positions:', error);
