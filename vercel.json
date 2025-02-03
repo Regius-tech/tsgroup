@@ -20,6 +20,10 @@
       "dest": "api/positions.js"
     },
     {
+      "src": "/(logo.*\\.png)", 
+      "dest": "/public/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
