@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "public/**", // Serve all files in the public folder
+      "src": "public/**", // 
       "use": "@vercel/static"
     },
     {
