@@ -6,6 +6,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "public/**", // Serve all files in the public folder
+      "use": "@vercel/static"
+    },
+    {
       "src": "index.html",
       "use": "@vercel/static"
     }
@@ -14,6 +18,10 @@
     {
       "src": "/api/positions",
       "dest": "api/positions.js"
+    },
+    {
+      "src": "/public/(.*)", // Serve files from the public folder
+      "dest": "/public/$1"
     },
     {
       "src": "/(.*)",
