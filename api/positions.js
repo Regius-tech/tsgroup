@@ -8,7 +8,12 @@ console.log('Starting function...');
 let vehiclesData = {};
 try {
     console.log('Loading vehicles.json...');
-    vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'api', 'vehicles.json'), 'utf8'));
+    const vehiclesArray = JSON.parse(fs.readFileSync(path.join(__dirname, 'api', 'vehicles.json'), 'utf8'));
+    // Convert vehiclesArray to an object with vehicle.number as the key
+    vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
+        acc[vehicle.number] = vehicle;
+        return acc;
+    }, {});
     console.log('vehicles.json loaded successfully:', vehiclesData);
 } catch (error) {
     console.warn('vehicles.json not found or invalid. Proceeding without it.');
@@ -103,8 +108,7 @@ module.exports = async (req, res) => {
                     isActiveToday: isActiveToday(vehicle),
                     type: vehicleData.type || 'Unknown',
                     palleplasser: vehicleData.palleplasser || 'Unknown',
-                    // Handle both bool and string "TRUE"/"FALSE" for isParticipant
-                    isParticipant: parseIsParticipant(vehicleData.isParticipant)
+                    isParticipant: parseIsParticipant(vehicleData.isParticipant || false)
                 };
             });
 
@@ -118,4 +122,3 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
-
