@@ -84,11 +84,15 @@ module.exports = async (req, res) => {
             const vehiclesWithLogos = data.map(vehicle => {
                 // Logging vehicle number to check if it matches vehicles.json
                 console.log(`Checking vehicle number: ${vehicle.number}`);
-                const vehicleData = vehiclesData[vehicle.number] || {};
                 
+                // Normalize vehicle number by removing spaces
+                const normalizedVehicleNumber = vehicle.number.replace(/\s+/g, '');
+
                 // Logging to confirm if we found data for this vehicle in vehicles.json
+                const vehicleData = vehiclesData[normalizedVehicleNumber] || null;
+                
                 if (!vehicleData) {
-                    console.log(`No matching data found for vehicle number: ${vehicle.number}`);
+                    console.log(`No matching data found for vehicle number: ${vehicle.number} (Normalized: ${normalizedVehicleNumber})`);
                 }
 
                 return {
@@ -96,10 +100,10 @@ module.exports = async (req, res) => {
                     logo: config.logo,
                     company: config.company,
                     isActiveToday: isActiveToday(vehicle),
-                    type: vehicleData.type || 'Unknown',
-                    palleplasser: vehicleData.palleplasser || 'Unknown',
+                    type: vehicleData ? vehicleData.type : 'Unknown',
+                    palleplasser: vehicleData ? vehicleData.palleplasser : 'Unknown',
                     // Handle both bool and string "TRUE"/"FALSE" for isParticipant
-                    isParticipant: parseIsParticipant(vehicleData.isParticipant)
+                    isParticipant: vehicleData ? parseIsParticipant(vehicleData.isParticipant) : false
                 };
             });
 
@@ -113,5 +117,3 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
-
-
