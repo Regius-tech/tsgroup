@@ -8,7 +8,7 @@ console.log('Starting function...');
 let vehiclesData = {};
 try {
     console.log('Loading vehicles.json...');
-    vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'vehicles.json'), 'utf8'));
+    vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'api', 'vehicles.json'), 'utf8'));
     console.log('vehicles.json loaded successfully:', vehiclesData);
 } catch (error) {
     console.warn('vehicles.json not found or invalid. Proceeding without it.');
@@ -53,6 +53,14 @@ function isActiveToday(vehicle) {
     return vehicleTime.getTime() === today.getTime();
 }
 
+// Helper function to convert "TRUE"/"FALSE" to true/false if needed
+function parseIsParticipant(value) {
+    if (typeof value === 'boolean') {
+        return value;
+    }
+    return value === 'TRUE'; // Converts "TRUE" to true, "FALSE" to false
+}
+
 module.exports = async (req, res) => {
     try {
         console.log('Fetching vehicle positions...');
@@ -73,15 +81,19 @@ module.exports = async (req, res) => {
             const data = await response.json();
             console.log(`Data fetched from ${config.url}:`, data);
 
-            const vehiclesWithLogos = data.map(vehicle => ({
-                ...vehicle,
-                logo: config.logo,
-                company: config.company,
-                isActiveToday: isActiveToday(vehicle),
-                type: vehiclesData[vehicle.number]?.type || 'Unknown',
-                palleplasser: vehiclesData[vehicle.number]?.palleplasser || 'Unknown',
-                isParticipant: vehiclesData[vehicle.number]?.isParticipant ?? false // Henter isParticipant fra vehicles.json, fallback = false
-            }));
+            const vehiclesWithLogos = data.map(vehicle => {
+                const vehicleData = vehiclesData[vehicle.number] || {};
+                return {
+                    ...vehicle,
+                    logo: config.logo,
+                    company: config.company,
+                    isActiveToday: isActiveToday(vehicle),
+                    type: vehicleData.type || 'Unknown',
+                    palleplasser: vehicleData.palleplasser || 'Unknown',
+                    // Handle both bool and string "TRUE"/"FALSE" for isParticipant
+                    isParticipant: parseIsParticipant(vehicleData.isParticipant)
+                };
+            });
 
             allPositions.push(...vehiclesWithLogos);
         }
