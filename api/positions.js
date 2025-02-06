@@ -8,7 +8,7 @@ console.log('Starting function...');
 let vehiclesData = {};
 try {
     console.log('Loading vehicles.json...');
-    vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'api', 'vehicles.json'), 'utf8')); // Endret til å bruke riktig sti
+    vehiclesData = JSON.parse(fs.readFileSync(path.join(__dirname, 'vehicles.json'), 'utf8'));
     console.log('vehicles.json loaded successfully:', vehiclesData);
 } catch (error) {
     console.warn('vehicles.json not found or invalid. Proceeding without it.');
@@ -33,6 +33,12 @@ const apiConfigurations = [
         apiKey: process.env.API_KEY_3,
         logo: '/logo3.png',
         company: 'Moss Transportforum',
+    },
+    {
+        url: 'https://blakurerno.opter.cloud/api/Positions/VehiclePositions', // Blå Kurér API
+        apiKey: '9683030c-3c46-479b-b7f8-abafe0175934',
+        logo: '/logo4.png',
+        company: 'Blå Kurér',
     },
 ];
 
@@ -74,7 +80,7 @@ module.exports = async (req, res) => {
                 isActiveToday: isActiveToday(vehicle),
                 type: vehiclesData[vehicle.number]?.type || 'Unknown',
                 palleplasser: vehiclesData[vehicle.number]?.palleplasser || 'Unknown',
-                isParticipant: vehiclesData[vehicle.number]?.isParticipant === "TRUE" || false // Endret: gjør om fra streng til boolean
+                isParticipant: vehiclesData[vehicle.number]?.isParticipant ?? false // Henter isParticipant fra vehicles.json, fallback = false
             }));
 
             allPositions.push(...vehiclesWithLogos);
@@ -87,4 +93,5 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
 
