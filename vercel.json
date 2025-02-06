@@ -12,6 +12,10 @@
     {
       "src": "index.html",
       "use": "@vercel/static"
+    },
+    {
+      "src": "api/vehicles.json",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
