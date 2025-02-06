@@ -82,7 +82,15 @@ module.exports = async (req, res) => {
             console.log(`Data fetched from ${config.url}:`, data);
 
             const vehiclesWithLogos = data.map(vehicle => {
+                // Logging vehicle number to check if it matches vehicles.json
+                console.log(`Checking vehicle number: ${vehicle.number}`);
                 const vehicleData = vehiclesData[vehicle.number] || {};
+                
+                // Logging to confirm if we found data for this vehicle in vehicles.json
+                if (!vehicleData) {
+                    console.log(`No matching data found for vehicle number: ${vehicle.number}`);
+                }
+
                 return {
                     ...vehicle,
                     logo: config.logo,
