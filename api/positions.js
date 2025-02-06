@@ -61,6 +61,11 @@ function parseIsParticipant(value) {
     return value === 'TRUE'; // Converts "TRUE" to true, "FALSE" to false
 }
 
+// Helper function to ensure vehicle number is a string for proper comparison
+function ensureString(value) {
+    return value.toString();
+}
+
 module.exports = async (req, res) => {
     try {
         console.log('Fetching vehicle positions...');
@@ -82,17 +87,13 @@ module.exports = async (req, res) => {
             console.log(`Data fetched from ${config.url}:`, data);
 
             const vehiclesWithLogos = data.map(vehicle => {
-                // Logging vehicle number to check if it matches vehicles.json
-                console.log(`Checking vehicle number: ${vehicle.number}`);
+                const vehicleNumber = ensureString(vehicle.number);
+                console.log(`Checking vehicle number: ${vehicleNumber}`);
                 
-                // Normalize vehicle number by removing spaces
-                const normalizedVehicleNumber = vehicle.number.replace(/\s+/g, '');
-
-                // Logging to confirm if we found data for this vehicle in vehicles.json
-                const vehicleData = vehiclesData[normalizedVehicleNumber] || null;
+                const vehicleData = vehiclesData[vehicleNumber] || {};
                 
                 if (!vehicleData) {
-                    console.log(`No matching data found for vehicle number: ${vehicle.number} (Normalized: ${normalizedVehicleNumber})`);
+                    console.log(`No matching data found for vehicle number: ${vehicleNumber}`);
                 }
 
                 return {
@@ -100,10 +101,10 @@ module.exports = async (req, res) => {
                     logo: config.logo,
                     company: config.company,
                     isActiveToday: isActiveToday(vehicle),
-                    type: vehicleData ? vehicleData.type : 'Unknown',
-                    palleplasser: vehicleData ? vehicleData.palleplasser : 'Unknown',
+                    type: vehicleData.type || 'Unknown',
+                    palleplasser: vehicleData.palleplasser || 'Unknown',
                     // Handle both bool and string "TRUE"/"FALSE" for isParticipant
-                    isParticipant: vehicleData ? parseIsParticipant(vehicleData.isParticipant) : false
+                    isParticipant: parseIsParticipant(vehicleData.isParticipant)
                 };
             });
 
@@ -117,3 +118,4 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
