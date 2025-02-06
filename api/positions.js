@@ -4,11 +4,22 @@ const path = require('path');
 
 console.log('Starting function...');
 
+// Sjekk om filen finnes ved å bruke fs.existsSync()
+const filePath = path.join(__dirname, 'api', 'vehicles.json');
+console.log('Looking for vehicles.json at:', filePath);
+
+// Kontroller om vehicles.json finnes
+if (fs.existsSync(filePath)) {
+    console.log('vehicles.json found!');
+} else {
+    console.warn('vehicles.json not found at path:', filePath);
+}
+
 // Load vehicles.json (if it exists)
 let vehiclesData = {};
 try {
     console.log('Loading vehicles.json...');
-    const vehiclesArray = JSON.parse(fs.readFileSync(path.join(__dirname, 'api', 'vehicles.json'), 'utf8'));
+    const vehiclesArray = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     // Convert vehiclesArray to an object with vehicle.number as the key
     vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
         acc[vehicle.number] = vehicle;
