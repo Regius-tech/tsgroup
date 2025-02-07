@@ -1,7 +1,7 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 // Stien til vehicles.json (som nå er flyttet til public-mappen)
-const vehiclesUrl = `${process.env.VERCEL_URL || 'http://localhost:3000'}/vehicles.json`;
+const vehiclesUrl = `https://${process.env.VERCEL_URL || 'localhost:3000'}/vehicles.json`;
 
 console.log('Starting function...');
 console.log('Vehicles URL:', vehiclesUrl);
