@@ -1,7 +1,11 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-// Stien til vehicles.json (som nå er flyttet til public-mappen)
-const vehiclesUrl = `https://${process.env.VERCEL_URL || 'localhost:3000'}/vehicles.json`;
+// Lag en korrekt URL for vehicles.json
+const vehiclesUrl = `${
+    process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}` // Bruk full URL fra Vercel
+        : 'http://localhost:3000' // Lokal utvikling
+}/vehicles.json`;
 
 console.log('Starting function...');
 console.log('Vehicles URL:', vehiclesUrl);
@@ -126,4 +130,5 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
 
