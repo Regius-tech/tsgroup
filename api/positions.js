@@ -1,34 +1,10 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
-const fs = require('fs');
-const path = require('path');
+
+// Stien til vehicles.json (som nå er flyttet til public-mappen)
+const vehiclesUrl = `${process.env.VERCEL_URL || 'http://localhost:3000'}/vehicles.json`;
 
 console.log('Starting function...');
-
-// Sjekk om filen finnes ved å bruke fs.existsSync()
-const filePath = path.join(__dirname, 'api', 'vehicles.json');
-console.log('Looking for vehicles.json at:', filePath);
-
-// Kontroller om vehicles.json finnes
-if (fs.existsSync(filePath)) {
-    console.log('vehicles.json found!');
-} else {
-    console.warn('vehicles.json not found at path:', filePath);
-}
-
-// Load vehicles.json (if it exists)
-let vehiclesData = {};
-try {
-    console.log('Loading vehicles.json...');
-    const vehiclesArray = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    // Convert vehiclesArray to an object with vehicle.number as the key
-    vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
-        acc[vehicle.number] = vehicle;
-        return acc;
-    }, {});
-    console.log('vehicles.json loaded successfully:', vehiclesData);
-} catch (error) {
-    console.warn('vehicles.json not found or invalid. Proceeding without it.');
-}
+console.log('Vehicles URL:', vehiclesUrl);
 
 // API configurations
 const apiConfigurations = [
@@ -84,6 +60,23 @@ function ensureString(value) {
 
 module.exports = async (req, res) => {
     try {
+        console.log('Fetching vehicles.json...');
+        const vehiclesResponse = await fetch(vehiclesUrl);
+        if (!vehiclesResponse.ok) {
+            console.error('Failed to fetch vehicles.json:', vehiclesResponse.statusText);
+            res.status(500).json({ error: 'Failed to fetch vehicles.json' });
+            return;
+        }
+        const vehiclesArray = await vehiclesResponse.json();
+
+        console.log('Vehicles.json loaded successfully:', vehiclesArray);
+
+        // Convert vehiclesArray to an object with vehicle.number as the key
+        const vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
+            acc[vehicle.number] = vehicle;
+            return acc;
+        }, {});
+
         console.log('Fetching vehicle positions...');
         const allPositions = [];
 
@@ -133,3 +126,4 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
