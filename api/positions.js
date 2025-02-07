@@ -3,7 +3,7 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 // Lag en korrekt URL for vehicles.json
 const vehiclesUrl = `${
     process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}` // Bruk full URL fra Vercel
+        ? `https://${process.env.VERCEL_URL.replace(/^https?:\/\//, '')}` // Renset Vercel URL
         : 'http://localhost:3000' // Lokal utvikling
 }/vehicles.json`;
 
@@ -65,14 +65,24 @@ function ensureString(value) {
 module.exports = async (req, res) => {
     try {
         console.log('Fetching vehicles.json...');
-        const vehiclesResponse = await fetch(vehiclesUrl);
+        console.log('Fetching vehicles.json from:', vehiclesUrl);
+
+        const vehiclesResponse = await fetch(vehiclesUrl, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }, // Eksplicit header
+        });
+
+        // Log response details
+        console.log('Response status:', vehiclesResponse.status);
+        console.log('Response headers:', vehiclesResponse.headers.raw());
+
         if (!vehiclesResponse.ok) {
             console.error('Failed to fetch vehicles.json:', vehiclesResponse.statusText);
             res.status(500).json({ error: 'Failed to fetch vehicles.json' });
             return;
         }
-        const vehiclesArray = await vehiclesResponse.json();
 
+        const vehiclesArray = await vehiclesResponse.json();
         console.log('Vehicles.json loaded successfully:', vehiclesArray);
 
         // Convert vehiclesArray to an object with vehicle.number as the key
@@ -102,9 +112,9 @@ module.exports = async (req, res) => {
             const vehiclesWithLogos = data.map(vehicle => {
                 const vehicleNumber = ensureString(vehicle.number);
                 console.log(`Checking vehicle number: ${vehicleNumber}`);
-                
+
                 const vehicleData = vehiclesData[vehicleNumber] || {};
-                
+
                 if (!vehicleData) {
                     console.log(`No matching data found for vehicle number: ${vehicleNumber}`);
                 }
@@ -116,7 +126,7 @@ module.exports = async (req, res) => {
                     isActiveToday: isActiveToday(vehicle),
                     type: vehicleData.type || 'Unknown',
                     palleplasser: vehicleData.palleplasser || 'Unknown',
-                    isParticipant: parseIsParticipant(vehicleData.isParticipant || false)
+                    isParticipant: parseIsParticipant(vehicleData.isParticipant || false),
                 };
             });
 
@@ -130,5 +140,6 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
 
 
