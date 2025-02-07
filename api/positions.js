@@ -77,7 +77,7 @@ module.exports = async (req, res) => {
         }
         const vehiclesArray = await vehiclesResponse.json();
 
-        console.log('vehicles.json loaded successfully:', vehiclesArray);
+        console.log('Vehicles.json loaded successfully:', vehiclesArray);
 
         // Convert vehiclesArray to an object with vehicle.number as the key
         const vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
@@ -134,6 +134,7 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
 
 
 
