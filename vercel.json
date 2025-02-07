@@ -10,10 +10,6 @@
       "use": "@vercel/node"
     },
     {
-      "src": "data/**",
-      "use": "@vercel/static"
-    },
-    {
       "src": "public/**",
       "use": "@vercel/static"
     }
@@ -24,12 +20,8 @@
       "dest": "api/positions.js"
     },
     {
-      "src": "/api/vehicles",
-      "dest": "api/vehicles.js"
-    },
-    {
       "src": "/vehicles.json",
-      "dest": "/data/vehicles.json"
+      "dest": "/public/vehicles.json"
     },
     {
       "src": "/(.*)",
@@ -37,5 +29,6 @@
     }
   ]
 }
+
 
 

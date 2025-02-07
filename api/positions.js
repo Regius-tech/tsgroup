@@ -1,13 +1,11 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-// Bruk API-ruten for å hente vehicles.json
-const vehiclesUrl = `${process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : 'http://localhost:3000'}/api/vehicles`;
+// Lag riktig URL for vehicles.json
+const vehiclesUrl = `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/vehicles.json`;
 
 console.log('Fetching vehicles.json from:', vehiclesUrl);
 
-// API-konfigurasjon for eksterne tjenester
+// API-konfigurasjoner
 const apiConfigurations = [
     {
         url: process.env.API_URL_1,
@@ -44,12 +42,12 @@ function isActiveToday(vehicle) {
     return vehicleTime.getTime() === today.getTime();
 }
 
-// Funksjon for å tolke TRUE/FALSE som boolean
+// Funksjon for å parse "TRUE"/"FALSE" til boolean
 function parseIsParticipant(value) {
-    return value === 'TRUE' || value === true;
+    return value === 'TRUE';
 }
 
-// Sørg for at kjøretøy-ID er en streng
+// Sikre at kjøretøynummer er en streng
 function ensureString(value) {
     return value.toString();
 }
@@ -58,7 +56,6 @@ module.exports = async (req, res) => {
     try {
         console.log('Fetching vehicles.json...');
         const vehiclesResponse = await fetch(vehiclesUrl);
-
         if (!vehiclesResponse.ok) {
             console.error('Failed to fetch vehicles.json:', vehiclesResponse.statusText);
             res.status(500).json({ error: 'Failed to fetch vehicles.json' });
@@ -66,9 +63,8 @@ module.exports = async (req, res) => {
         }
 
         const vehiclesArray = await vehiclesResponse.json();
-        console.log('Successfully fetched vehicles.json:', vehiclesArray);
+        console.log('vehicles.json loaded successfully:', vehiclesArray);
 
-        // Konverter vehiclesArray til objekt for enklere oppslag
         const vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
             acc[vehicle.number] = vehicle;
             return acc;
@@ -103,7 +99,7 @@ module.exports = async (req, res) => {
                     isActiveToday: isActiveToday(vehicle),
                     type: vehicleData.type || 'Unknown',
                     palleplasser: vehicleData.palleplasser || 'Unknown',
-                    isParticipant: parseIsParticipant(vehicleData.isParticipant || false),
+                    isParticipant: parseIsParticipant(vehicleData.isParticipant || 'FALSE'),
                 };
             });
 
@@ -117,4 +113,6 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
+
 
