@@ -1,17 +1,11 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-// Generer URL for vehicles.json på en robust måte
-let baseUrl;
-if (process.env.VERCEL_URL) {
-    baseUrl = `https://${process.env.VERCEL_URL.replace(/^https?:\/\//, '')}`;
-} else {
-    baseUrl = 'http://localhost:3000'; // For lokal utvikling
-}
-
-const vehiclesUrl = `${baseUrl}/vehicles.json`;
+// Dynamisk URL-håndtering
+const vehiclesUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL.replace(/^https?:\/\//, '')}/vehicles.json`
+    : 'http://localhost:3000/vehicles.json';
 
 console.log('Starting function...');
-console.log('Base URL:', baseUrl);
 console.log('Vehicles URL:', vehiclesUrl);
 
 // API configurations
@@ -44,7 +38,7 @@ const apiConfigurations = [
 
 console.log('API configurations:', apiConfigurations);
 
-// Helper function to check if a vehicle is active today
+// Helper functions
 function isActiveToday(vehicle) {
     const vehicleTime = new Date(vehicle.time);
     const today = new Date();
@@ -53,19 +47,18 @@ function isActiveToday(vehicle) {
     return vehicleTime.getTime() === today.getTime();
 }
 
-// Helper function to convert "TRUE"/"FALSE" to true/false if needed
 function parseIsParticipant(value) {
     if (typeof value === 'boolean') {
         return value;
     }
-    return value === 'TRUE'; // Converts "TRUE" to true, "FALSE" to false
+    return value === 'TRUE';
 }
 
-// Helper function to ensure vehicle number is a string for proper comparison
 function ensureString(value) {
     return value.toString();
 }
 
+// Main handler
 module.exports = async (req, res) => {
     try {
         console.log('Fetching vehicles.json...');
@@ -77,9 +70,8 @@ module.exports = async (req, res) => {
         }
         const vehiclesArray = await vehiclesResponse.json();
 
-        console.log('Vehicles.json loaded successfully:', vehiclesArray);
+        console.log('vehicles.json loaded successfully:', vehiclesArray);
 
-        // Convert vehiclesArray to an object with vehicle.number as the key
         const vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
             acc[vehicle.number] = vehicle;
             return acc;
