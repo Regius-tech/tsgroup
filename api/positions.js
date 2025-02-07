@@ -1,12 +1,10 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-// Dynamisk URL-håndtering
-const vehiclesUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL.replace(/^https?:\/\//, '')}/vehicles.json`
-    : 'http://localhost:3000/vehicles.json';
-
-console.log('Starting function...');
-console.log('Vehicles URL:', vehiclesUrl);
+// Stien til vehicles.json (bruker enten VERCEL_URL eller host-header for korrekt URL)
+const getVehiclesUrl = (req) => {
+    const baseUrl = process.env.VERCEL_URL || req.headers.host;
+    return `https://${baseUrl}/vehicles.json`;
+};
 
 // API configurations
 const apiConfigurations = [
@@ -38,7 +36,7 @@ const apiConfigurations = [
 
 console.log('API configurations:', apiConfigurations);
 
-// Helper functions
+// Helper function to check if a vehicle is active today
 function isActiveToday(vehicle) {
     const vehicleTime = new Date(vehicle.time);
     const today = new Date();
@@ -47,31 +45,35 @@ function isActiveToday(vehicle) {
     return vehicleTime.getTime() === today.getTime();
 }
 
+// Helper function to convert "TRUE"/"FALSE" to true/false if needed
 function parseIsParticipant(value) {
     if (typeof value === 'boolean') {
         return value;
     }
-    return value === 'TRUE';
+    return value === 'TRUE'; // Converts "TRUE" to true, "FALSE" to false
 }
 
+// Helper function to ensure vehicle number is a string for proper comparison
 function ensureString(value) {
     return value.toString();
 }
 
-// Main handler
 module.exports = async (req, res) => {
     try {
-        console.log('Fetching vehicles.json...');
+        const vehiclesUrl = getVehiclesUrl(req);
+        console.log('Fetching vehicles.json from:', vehiclesUrl);
+
         const vehiclesResponse = await fetch(vehiclesUrl);
         if (!vehiclesResponse.ok) {
             console.error('Failed to fetch vehicles.json:', vehiclesResponse.statusText);
             res.status(500).json({ error: 'Failed to fetch vehicles.json' });
             return;
         }
+
         const vehiclesArray = await vehiclesResponse.json();
+        console.log('Vehicles.json loaded successfully:', vehiclesArray);
 
-        console.log('vehicles.json loaded successfully:', vehiclesArray);
-
+        // Convert vehiclesArray to an object with vehicle.number as the key
         const vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
             acc[vehicle.number] = vehicle;
             return acc;
@@ -126,7 +128,3 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
-
-
-
-

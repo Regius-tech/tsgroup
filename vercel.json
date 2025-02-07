@@ -8,14 +8,6 @@
     {
       "src": "public/**",
       "use": "@vercel/static"
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "api/vehicles.json",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -24,8 +16,12 @@
       "dest": "api/positions.js"
     },
     {
+      "src": "/vehicles.json",
+      "dest": "/vehicles.json"
+    },
+    {
       "src": "/(logo.*\\.png)", 
-      "dest": "/public/$1"
+      "dest": "/$1"
     },
     {
       "src": "/(.*)",
@@ -33,3 +29,4 @@
     }
   ]
 }
+
