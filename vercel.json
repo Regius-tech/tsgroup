@@ -8,10 +8,6 @@
     {
       "src": "api/vehicles.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -20,15 +16,12 @@
       "dest": "api/positions.js"
     },
     {
-      "src": "/vehicles.json",
-      "dest": "/public/vehicles.json"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
+      "src": "/api/vehicles",
+      "dest": "api/vehicles.js"
     }
   ]
 }
+
 
 
 
