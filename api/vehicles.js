@@ -1,15 +1,17 @@
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 
-module.exports = async (req, res) => {
+module.exports = (req, res) => {
+    const filePath = path.join(__dirname, '../data/vehicles.json');
+
     try {
-        const filePath = path.join(__dirname, '..', 'data', 'vehicles.json');
-        const vehiclesData = fs.readFileSync(filePath, 'utf8');
+        const fileContents = fs.readFileSync(filePath, 'utf8');
+        const vehiclesData = JSON.parse(fileContents);
 
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).send(vehiclesData);
+        res.status(200).json(vehiclesData);
     } catch (error) {
         console.error('Error reading vehicles.json:', error);
-        res.status(500).json({ error: 'Failed to read vehicles.json' });
+        res.status(500).json({ error: 'Failed to load vehicles.json' });
     }
 };
+
