@@ -6,6 +6,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/vehicles.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "public/**",
       "use": "@vercel/static"
     }
@@ -13,19 +17,16 @@
   "routes": [
     {
       "src": "/api/positions",
-      "dest": "/api/positions.js"
+      "dest": "api/positions.js"
     },
     {
-      "src": "/vehicles.json",
-      "dest": "/public/vehicles.json"
-    },
-    {
-      "src": "/(logo.*\\.png)", 
-      "dest": "/public/$1"
+      "src": "/api/vehicles",
+      "dest": "api/vehicles.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/public/$1"
     }
   ]
 }
+

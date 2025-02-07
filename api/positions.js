@@ -1,12 +1,13 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-// Stien til vehicles.json (bruker enten VERCEL_URL eller host-header for korrekt URL)
-const getVehiclesUrl = (req) => {
-    const baseUrl = process.env.VERCEL_URL || req.headers.host;
-    return `https://${baseUrl}/vehicles.json`;
-};
+// Bruk API-ruten for å hente vehicles.json
+const vehiclesUrl = `${process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : 'http://localhost:3000'}/api/vehicles`;
 
-// API configurations
+console.log('Fetching vehicles.json from:', vehiclesUrl);
+
+// API-konfigurasjon for eksterne tjenester
 const apiConfigurations = [
     {
         url: process.env.API_URL_1,
@@ -27,16 +28,14 @@ const apiConfigurations = [
         company: 'Moss Transportforum',
     },
     {
-        url: 'https://blakurerno.opter.cloud/api/Positions/VehiclePositions', // Blå Kurér API
+        url: 'https://blakurerno.opter.cloud/api/Positions/VehiclePositions',
         apiKey: '9683030c-3c46-479b-b7f8-abafe0175934',
         logo: '/logo4.png',
         company: 'Blå Kurér',
     },
 ];
 
-console.log('API configurations:', apiConfigurations);
-
-// Helper function to check if a vehicle is active today
+// Funksjon for å sjekke om et kjøretøy er aktivt i dag
 function isActiveToday(vehicle) {
     const vehicleTime = new Date(vehicle.time);
     const today = new Date();
@@ -45,25 +44,21 @@ function isActiveToday(vehicle) {
     return vehicleTime.getTime() === today.getTime();
 }
 
-// Helper function to convert "TRUE"/"FALSE" to true/false if needed
+// Funksjon for å tolke TRUE/FALSE som boolean
 function parseIsParticipant(value) {
-    if (typeof value === 'boolean') {
-        return value;
-    }
-    return value === 'TRUE'; // Converts "TRUE" to true, "FALSE" to false
+    return value === 'TRUE' || value === true;
 }
 
-// Helper function to ensure vehicle number is a string for proper comparison
+// Sørg for at kjøretøy-ID er en streng
 function ensureString(value) {
     return value.toString();
 }
 
 module.exports = async (req, res) => {
     try {
-        const vehiclesUrl = getVehiclesUrl(req);
-        console.log('Fetching vehicles.json from:', vehiclesUrl);
-
+        console.log('Fetching vehicles.json...');
         const vehiclesResponse = await fetch(vehiclesUrl);
+
         if (!vehiclesResponse.ok) {
             console.error('Failed to fetch vehicles.json:', vehiclesResponse.statusText);
             res.status(500).json({ error: 'Failed to fetch vehicles.json' });
@@ -71,9 +66,9 @@ module.exports = async (req, res) => {
         }
 
         const vehiclesArray = await vehiclesResponse.json();
-        console.log('Vehicles.json loaded successfully:', vehiclesArray);
+        console.log('Successfully fetched vehicles.json:', vehiclesArray);
 
-        // Convert vehiclesArray to an object with vehicle.number as the key
+        // Konverter vehiclesArray til objekt for enklere oppslag
         const vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
             acc[vehicle.number] = vehicle;
             return acc;
@@ -99,13 +94,7 @@ module.exports = async (req, res) => {
 
             const vehiclesWithLogos = data.map(vehicle => {
                 const vehicleNumber = ensureString(vehicle.number);
-                console.log(`Checking vehicle number: ${vehicleNumber}`);
-                
                 const vehicleData = vehiclesData[vehicleNumber] || {};
-                
-                if (!vehicleData) {
-                    console.log(`No matching data found for vehicle number: ${vehicleNumber}`);
-                }
 
                 return {
                     ...vehicle,
@@ -114,7 +103,7 @@ module.exports = async (req, res) => {
                     isActiveToday: isActiveToday(vehicle),
                     type: vehicleData.type || 'Unknown',
                     palleplasser: vehicleData.palleplasser || 'Unknown',
-                    isParticipant: parseIsParticipant(vehicleData.isParticipant || false)
+                    isParticipant: parseIsParticipant(vehicleData.isParticipant || false),
                 };
             });
 
@@ -128,3 +117,4 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
