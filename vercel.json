@@ -13,15 +13,15 @@
   "routes": [
     {
       "src": "/api/positions",
-      "dest": "api/positions.js"
+      "dest": "/api/positions.js"
     },
     {
       "src": "/vehicles.json",
-      "dest": "/vehicles.json"
+      "dest": "/public/vehicles.json"
     },
     {
       "src": "/(logo.*\\.png)", 
-      "dest": "/$1"
+      "dest": "/public/$1"
     },
     {
       "src": "/(.*)",
@@ -29,4 +29,3 @@
     }
   ]
 }
-
