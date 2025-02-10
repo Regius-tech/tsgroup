@@ -1,15 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/positions.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/vehicles.js",
-      "use": "@vercel/node"
-    }
-  ],
   "routes": [
     {
       "src": "/api/positions",
@@ -21,6 +11,7 @@
     }
   ]
 }
+
 
 
 
