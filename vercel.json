@@ -6,15 +6,12 @@
       "dest": "api/positions.js"
     },
     {
-      "src": "/api/vehicles",
-      "dest": "api/vehicles.js"
-    },
-    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
   ]
 }
+
 
 
 
