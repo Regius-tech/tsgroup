@@ -6,6 +6,10 @@
       "dest": "api/positions.js"
     },
     {
+      "src": "/logo(.*)",
+      "dest": "/public/logo$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
@@ -15,6 +19,7 @@
     { "src": "index.html", "use": "@vercel/static" }
   ]
 }
+
 
 
 
