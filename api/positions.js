@@ -59,7 +59,7 @@ module.exports = async (req, res) => {
         for (const config of apiConfigurations) {
             try {
                 // Les bilinformasjon fra den aktuelle JSON-filen
-                const filePath = path.join(__dirname, 'data', config.vehicleFile);
+                const filePath = path.join(process.cwd(), 'data', config.vehicleFile);
                 const fileContents = await fs.readFile(filePath, 'utf8');
                 const vehiclesArray = JSON.parse(fileContents);
 
