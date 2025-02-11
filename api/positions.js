@@ -1,38 +1,39 @@
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const path = require('path');
+const fs = require('fs').promises;
 
-// Bruk en fast URL for /api/vehicles
-const vehiclesUrl = 'https://triflex-elj6pctdf-regius-projects-4af63267.vercel.app/api/vehicles';
-console.log('Fetching vehicles data from:', vehiclesUrl);
-
-// Konfigurasjoner for eksterne API-er
+// Konfigurasjon for eksterne API-er og bildata
 const apiConfigurations = [
     {
         url: process.env.API_URL_1,
         apiKey: process.env.API_KEY_1,
         logo: '/logo1.png',
         company: 'Transportsentralen Oslo',
+        vehicleFile: 'tsoslo.json', // Filen for bilinformasjon
     },
     {
         url: process.env.API_URL_2,
         apiKey: process.env.API_KEY_2,
         logo: '/logo2.png',
         company: 'TS Oslo Budtjenester',
+        vehicleFile: 'tsoslobud.json', // Filen for bilinformasjon
     },
     {
         url: process.env.API_URL_3,
         apiKey: process.env.API_KEY_3,
         logo: '/logo3.png',
         company: 'Moss Transportforum',
+        vehicleFile: 'mtf.json', // Filen for bilinformasjon
     },
     {
         url: process.env.API_URL_4,
         apiKey: process.env.API_KEY_4,
         logo: '/logo4.png',
         company: 'Blå Kurér',
+        vehicleFile: 'blakurer.json', // Filen for bilinformasjon
     },
 ];
 
-// Sjekker om kjøretøyet er aktivt i dag
+// Funksjon for å sjekke om kjøretøyet er aktivt i dag
 function isActiveToday(vehicle) {
     const vehicleTime = new Date(vehicle.time);
     const today = new Date();
@@ -41,9 +42,9 @@ function isActiveToday(vehicle) {
     return vehicleTime.getTime() === today.getTime();
 }
 
-// Parser verdien for `isParticipant`
+// Funksjon for å parse `isParticipant`
 function parseIsParticipant(value) {
-    return value === 'TRUE';
+    return value === true || value === 'TRUE';
 }
 
 // Sikrer at verdien er en streng
@@ -53,41 +54,25 @@ function ensureString(value) {
 
 module.exports = async (req, res) => {
     try {
-        // Hent data fra /api/vehicles
-        console.log('Fetching vehicles data...');
-        const vehiclesResponse = await fetch(vehiclesUrl, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }, // Legg til nødvendige headere
-        });
-
-        if (!vehiclesResponse.ok) {
-            console.error('Failed to fetch vehicles data:', vehiclesResponse.statusText);
-            res.status(500).json({ error: 'Failed to fetch vehicles data' });
-            return;
-        }
-
-        const vehiclesArray = await vehiclesResponse.json();
-        console.log('Vehicles data loaded successfully:', vehiclesArray);
-
-        // Konverter vehiclesArray til et oppslag (object) basert på kjøretøynummer
-        const vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
-            acc[vehicle.number] = vehicle;
-            return acc;
-        }, {});
-
-        console.log('Fetching vehicle positions...');
         const allPositions = [];
 
-        // Loop gjennom API-konfigurasjonene for å hente posisjonsdata
         for (const config of apiConfigurations) {
             try {
+                // Les bilinformasjon fra den aktuelle JSON-filen
+                const filePath = path.join(__dirname, 'data', config.vehicleFile);
+                const fileContents = await fs.readFile(filePath, 'utf8');
+                const vehiclesArray = JSON.parse(fileContents);
+
+                // Gjør bilinformasjonen om til et oppslag (object) basert på kjøretøynummer
+                const vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
+                    acc[vehicle.number] = vehicle;
+                    return acc;
+                }, {});
+
                 console.log(`Fetching data from: ${config.url}`);
                 const response = await fetch(config.url, {
                     method: 'GET',
-                    headers: { 
-                        'x-api-key': config.apiKey,
-                        'Content-Type': 'application/json', // Legg til nødvendige headere
-                    },
+                    headers: { 'x-api-key': config.apiKey },
                 });
 
                 if (!response.ok) {
@@ -110,13 +95,13 @@ module.exports = async (req, res) => {
                         isActiveToday: isActiveToday(vehicle),
                         type: vehicleData.type || 'Unknown',
                         palleplasser: vehicleData.palleplasser || 'Unknown',
-                        isParticipant: parseIsParticipant(vehicleData.isParticipant || 'FALSE'),
+                        isParticipant: parseIsParticipant(vehicleData.isParticipant || false),
                     };
                 });
 
                 allPositions.push(...vehiclesWithLogos);
             } catch (error) {
-                console.error(`Error processing data from ${config.url}:`, error.message);
+                console.error(`Error processing data for ${config.company}:`, error.message);
             }
         }
 
@@ -127,6 +112,7 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
 
 
 
