@@ -1,7 +1,7 @@
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-// Bygger URL for å hente kjøretøydata
-const vehiclesUrl = `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/api/vehicles`;
+// Bruk en fast URL for /api/vehicles
+const vehiclesUrl = 'https://triflex-elj6pctdf-regius-projects-4af63267.vercel.app/api/vehicles';
 console.log('Fetching vehicles data from:', vehiclesUrl);
 
 // Konfigurasjoner for eksterne API-er
@@ -25,8 +25,8 @@ const apiConfigurations = [
         company: 'Moss Transportforum',
     },
     {
-        url: process.env.API_URL_4, // Endret til samme format som de andre selskapene
-        apiKey: process.env.API_KEY_4, // Bruker miljøvariabler for Blå Kurér
+        url: process.env.API_URL_4,
+        apiKey: process.env.API_KEY_4,
         logo: '/logo4.png',
         company: 'Blå Kurér',
     },
@@ -55,7 +55,11 @@ module.exports = async (req, res) => {
     try {
         // Hent data fra /api/vehicles
         console.log('Fetching vehicles data...');
-        const vehiclesResponse = await fetch(vehiclesUrl);
+        const vehiclesResponse = await fetch(vehiclesUrl, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }, // Legg til nødvendige headere
+        });
+
         if (!vehiclesResponse.ok) {
             console.error('Failed to fetch vehicles data:', vehiclesResponse.statusText);
             res.status(500).json({ error: 'Failed to fetch vehicles data' });
@@ -80,7 +84,10 @@ module.exports = async (req, res) => {
                 console.log(`Fetching data from: ${config.url}`);
                 const response = await fetch(config.url, {
                     method: 'GET',
-                    headers: { 'x-api-key': config.apiKey },
+                    headers: { 
+                        'x-api-key': config.apiKey,
+                        'Content-Type': 'application/json', // Legg til nødvendige headere
+                    },
                 });
 
                 if (!response.ok) {
@@ -120,6 +127,7 @@ module.exports = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch vehicle positions' });
     }
 };
+
 
 
 
