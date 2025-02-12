@@ -16,9 +16,14 @@
   ],
   "builds": [
     { "src": "api/positions.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" }
-  ]
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "public/**", "use": "@vercel/static" }
+  ],
+  "static": {
+    "directory": "public"
+  }
 }
+
 
 
 
