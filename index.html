@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Triflex Kart</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -73,7 +74,6 @@
         <select id="company-filter">
             <option value="all">Alle</option>
             <option value="Transportsentralen Oslo">Transportsentralen Oslo</option>
-            <option value="TS Oslo Budtjenester">TS Oslo Budtjenester</option>
             <option value="Moss Transportforum">Moss Transportforum</option>
             <option value="Blå Kurér">Blå Kurér</option>
         </select>
@@ -83,8 +83,12 @@
     </div>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"></script>
     <script>
-        const map = L.map('map').setView([59.9139, 10.7522], 10); // Oslo-koordinater
+        const map = L.map('map', {
+            fullscreenControl: true // Aktiver fullskjermkontroll
+        }).setView([59.9139, 10.7522], 10); // Oslo-koordinater
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
         }).addTo(map);
@@ -164,6 +168,7 @@
     </script>
 </body>
 </html>
+
 
 
 
