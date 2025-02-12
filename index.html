@@ -142,9 +142,9 @@
                         const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon });
                         marker.bindPopup(
                             `<b>Type:</b> ${vehicle.type}<br>
-                             <b>Palleplasser:</b> ${vehicle.palleplasser}
+                             <b>Palleplasser:</b> ${vehicle.palleplasser}<br>
                              <b>Klokkeslett:</b> ${formatTimestamp(vehicle.time)}<br>
-                             <b>Selskap:</b> ${vehicle.company}<br>`
+                             <b>Selskap:</b> ${vehicle.company}`
                         );
                         marker.addTo(map);
                         markers.push(marker);
@@ -163,5 +163,6 @@
     </script>
 </body>
 </html>
+
 
 
