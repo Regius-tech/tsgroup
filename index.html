@@ -141,7 +141,8 @@
 
                         const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon });
                         marker.bindPopup(
-                            `<b>Type:</b> ${vehicle.type}<br>
+                            `<b>Navn:</b> ${vehicle.name}<br>
+                             <b>Type:</b> ${vehicle.type}<br>
                              <b>Palleplasser:</b> ${vehicle.palleplasser}<br>
                              <b>Klokkeslett:</b> ${formatTimestamp(vehicle.time)}<br>
                              <b>Selskap:</b> ${vehicle.company}`
@@ -163,6 +164,7 @@
     </script>
 </body>
 </html>
+
 
 
 
