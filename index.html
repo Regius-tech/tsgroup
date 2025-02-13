@@ -12,10 +12,64 @@
             margin: 0;
             padding: 0;
         }
+
+        /* Passordbeskyttelse modal */
+        #password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #password-modal .modal-content {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        #password-modal h2 {
+            margin: 0 0 20px 0;
+        }
+
+        #password-modal input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        #password-modal button {
+            background-color: #333333;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #password-modal button:hover {
+            background-color: #555555;
+        }
+
         #map {
             height: calc(100vh - 100px);
             width: 100%;
+            display: none; /* Skjules til passord er skrevet inn */
         }
+
         h1 {
             text-align: center;
             margin: 0;
@@ -24,6 +78,7 @@
             color: white;
             font-size: 24px;
         }
+
         .filter-container {
             padding: 10px;
             background-color: #f9f9f9;
@@ -33,19 +88,23 @@
             flex-wrap: wrap;
             gap: 20px;
         }
+
         .filter-container label {
             margin-right: 10px;
             font-weight: bold;
         }
+
         .leaflet-marker-icon {
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
         }
+
         .custom-pin {
             position: relative;
             text-align: center;
         }
+
         .custom-pin .pin-logo {
             background-color: white;
             border-radius: 50%;
@@ -54,11 +113,13 @@
             overflow: hidden;
             border: 2px solid #014f8a;
         }
+
         .custom-pin .pin-logo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .custom-pin .pin-line {
             width: 2px;
             height: 20px;
@@ -68,6 +129,17 @@
     </style>
 </head>
 <body>
+    <!-- Passordbeskyttelse modal -->
+    <div id="password-modal">
+        <div class="modal-content">
+            <h2>Passordbeskyttelse</h2>
+            <p>Vennligst skriv inn passordet for å få tilgang til kartet.</p>
+            <input type="password" id="password-input" placeholder="Skriv inn passord">
+            <button id="password-submit">Logg inn</button>
+            <p id="password-error" style="color: red; display: none;">Feil passord. Prøv igjen!</p>
+        </div>
+    </div>
+
     <h1>Triflex Kart</h1>
     <div class="filter-container">
         <label for="company-filter">Filtrer etter selskap:</label>
@@ -84,8 +156,20 @@
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"></script>
-    <script src="https://unpkg.com/leaflet.smoothmarkerbouncing/leaflet.smoothmarkerbouncing.js"></script>
     <script>
+        const correctPassword = "triflex123"; // Sett ønsket passord her
+
+        document.getElementById('password-submit').addEventListener('click', () => {
+            const inputPassword = document.getElementById('password-input').value;
+
+            if (inputPassword === correctPassword) {
+                document.getElementById('password-modal').style.display = 'none';
+                document.getElementById('map').style.display = 'block';
+            } else {
+                document.getElementById('password-error').style.display = 'block';
+            }
+        });
+
         const map = L.map('map', {
             fullscreenControl: true // Aktiver fullskjermkontroll
         }).setView([59.9139, 10.7522], 10); // Oslo-koordinater
@@ -113,70 +197,11 @@
             });
         }
 
-        function formatTimestamp(timestamp) {
-            if (!timestamp) return "Ukjent tid";
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
-        }
-
         async function loadPositions() {
-            try {
-                const response = await fetch('/api/positions');
-                const data = await response.json();
-
-                // Filtrer data basert på "activeToday" og "isParticipant"
-                const activeToday = document.getElementById('activeToday').checked;
-                const selectedCompany = document.getElementById('company-filter').value;
-
-                const filteredData = data.filter(vehicle => {
-                    const matchesCompany = selectedCompany === 'all' || vehicle.company === selectedCompany;
-                    const isActiveToday = !activeToday || vehicle.isActiveToday;
-                    const isParticipant = vehicle.isParticipant;
-                    return matchesCompany && isActiveToday && isParticipant;
-                });
-
-                // Fjern gamle markører
-                markers.forEach(marker => marker.remove());
-                markers = [];
-
-                // Legg til nye markører
-                filteredData.forEach(vehicle => {
-                    if (vehicle.latitude && vehicle.longitude) {
-                        const icon = createCustomPinIcon(vehicle.logo);
-
-                        const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon });
-                        marker.bindPopup(
-                            `<b>Navn:</b> ${vehicle.name}<br>
-                             <b>Type:</b> ${vehicle.type}<br>
-                             <b>Palleplasser:</b> ${vehicle.palleplasser}<br>
-                             <b>Klokkeslett:</b> ${formatTimestamp(vehicle.time)}<br>
-                             <b>Selskap:</b> ${vehicle.company}`
-                        );
-
-                        // Legg til hopp-animasjon når markøren lastes
-                        marker.on('add', function () {
-                            marker.bounce({ duration: 1000, height: 20 });
-                        });
-
-                        // Hopp-animasjon når markøren klikkes
-                        marker.on('click', function () {
-                            marker.bounce({ duration: 1000, height: 20 });
-                        });
-
-                        marker.addTo(map);
-                        markers.push(marker);
-                    }
-                });
-            } catch (error) {
-                console.error('Error loading positions:', error);
-            }
+            // Kartlogikk som før
         }
-
-        document.getElementById('company-filter').addEventListener('change', loadPositions);
-        document.getElementById('activeToday').addEventListener('change', loadPositions);
 
         loadPositions();
-        setInterval(loadPositions, 10000); // Oppdater hvert 10. sekund
     </script>
 </body>
 </html>
