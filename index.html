@@ -37,21 +37,32 @@
             margin-right: 10px;
             font-weight: bold;
         }
-        .custom-marker {
-            width: 20px;
-            height: 20px;
+        .leaflet-marker-icon {
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .custom-pin {
+            position: relative;
+            text-align: center;
+        }
+        .custom-pin .pin-logo {
+            background-color: white;
             border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+            width: 30px;
+            height: 30px;
+            overflow: hidden;
+            border: 2px solid;
         }
-        .marker-red {
-            background-color: red;
+        .custom-pin .pin-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        .marker-blue {
-            background-color: darkblue;
-        }
-        .marker-red-blue {
-            background: linear-gradient(to bottom, red 50%, darkblue 50%);
+        .custom-pin .pin-line {
+            width: 2px;
+            height: 20px;
+            margin: 0 auto;
         }
     </style>
 </head>
@@ -83,21 +94,31 @@
 
         let markers = [];
 
-        function createCustomMarker(company) {
-            let className;
+        function createCustomPinIcon(logoUrl, company) {
+            let borderColor;
             if (company === "Transportsentralen Oslo") {
-                className = 'marker-red';
+                borderColor = "red";
             } else if (company === "Blå Kurér") {
-                className = 'marker-blue';
+                borderColor = "darkblue";
             } else if (company === "Moss Transportforum") {
-                className = 'marker-red-blue';
+                borderColor = "linear-gradient(to bottom, darkblue 50%, red 50%)";
             } else {
-                className = 'marker-default';
+                borderColor = "#014f8a"; // Standard blå
             }
+
             return L.divIcon({
-                className: `custom-marker ${className}`,
-                iconSize: [20, 20],
-                iconAnchor: [10, 10]
+                className: 'custom-pin',
+                html: `
+                    <div>
+                        <div class="pin-logo" style="border-color: ${borderColor};">
+                            <img src="${logoUrl}" alt="Logo">
+                        </div>
+                        <div class="pin-line" style="background-color: ${borderColor};"></div>
+                    </div>
+                `,
+                iconSize: [30, 50],
+                iconAnchor: [15, 50],
+                popupAnchor: [0, -40],
             });
         }
 
@@ -130,7 +151,7 @@
                 // Legg til nye markører
                 filteredData.forEach(vehicle => {
                     if (vehicle.latitude && vehicle.longitude) {
-                        const icon = createCustomMarker(vehicle.company);
+                        const icon = createCustomPinIcon(vehicle.logo, vehicle.company);
 
                         const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon });
                         marker.bindPopup(
@@ -157,6 +178,7 @@
     </script>
 </body>
 </html>
+
 
 
 
