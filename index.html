@@ -4,17 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Triflex Kart</title>
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <!-- Leaflet Fullscreen CSS -->
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css" />
-    <!-- Google Fonts (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Material Design Icon Font -->
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -41,19 +35,7 @@
         }
         .filter-container label {
             margin-right: 10px;
-            font-weight: 600;
-        }
-        .filter-container select,
-        .filter-container input {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .filter-container select:focus,
-        .filter-container input:focus {
-            outline: none;
-            border-color: #0078d4;
+            font-weight: bold;
         }
         .leaflet-marker-icon {
             background-size: contain;
@@ -83,19 +65,6 @@
             background-color: #014f8a;
             margin: 0 auto;
         }
-        .leaflet-fullscreen {
-            background: white;
-            color: #555;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 8px;
-            font-size: 14px;
-        }
-        .leaflet-fullscreen:hover {
-            background: #0078d4;
-            color: white;
-            border-color: #005bb5;
-        }
     </style>
 </head>
 <body>
@@ -113,15 +82,12 @@
         </label>
     </div>
     <div id="map"></div>
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <!-- Leaflet Fullscreen JS -->
     <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"></script>
+    <script src="https://unpkg.com/leaflet.smoothmarkerbouncing/leaflet.smoothmarkerbouncing.js"></script>
     <script>
         const map = L.map('map', {
-            fullscreenControl: {
-                pseudoFullscreen: false // Fullskjermmodus for hele skjermen
-            }
+            fullscreenControl: true // Aktiver fullskjermkontroll
         }).setView([59.9139, 10.7522], 10); // Oslo-koordinater
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -186,6 +152,17 @@
                              <b>Klokkeslett:</b> ${formatTimestamp(vehicle.time)}<br>
                              <b>Selskap:</b> ${vehicle.company}`
                         );
+
+                        // Legg til hopp-animasjon når markøren lastes
+                        marker.on('add', function () {
+                            marker.bounce({ duration: 1000, height: 20 });
+                        });
+
+                        // Hopp-animasjon når markøren klikkes
+                        marker.on('click', function () {
+                            marker.bounce({ duration: 1000, height: 20 });
+                        });
+
                         marker.addTo(map);
                         markers.push(marker);
                     }
