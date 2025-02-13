@@ -5,7 +5,7 @@
         "name": "KHL Transport & Service Larsen",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 2,
@@ -21,7 +21,7 @@
         "name": "Kåre S. Cammermeyer",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 4,
@@ -37,7 +37,7 @@
         "name": "Bozza Kran & Transport",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 6,
@@ -61,7 +61,7 @@
         "name": "Daniel Betten",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 14,
@@ -69,7 +69,7 @@
         "name": "J. G Transport & Entreprenør AS",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 15,
@@ -77,7 +77,7 @@
         "name": "VGT Vegmanis",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 16,
@@ -85,7 +85,7 @@
         "name": "Kalind Kran- og Transport AS",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 17,
@@ -93,7 +93,7 @@
         "name": "Mathias Morten Transport",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 18,
@@ -109,7 +109,7 @@
         "name": "Morkens Bilservice",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 20,
@@ -117,7 +117,7 @@
         "name": "J. G Transport & Entreprenør AS",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 21,
@@ -141,6 +141,6 @@
         "name": "Paul-Erik Gransbråten Transport",
         "type": "Test",
         "palleplasser": 1,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     }
 ]

@@ -574,5 +574,13 @@
         "type": "Kranbil 4-akslet",
         "palleplasser": 15,
         "isParticipant": "TRUE"
+    },
+    {
+        "id": 134,
+        "number": 230601,
+        "name": "Terje Bergfall",
+        "type": "Vare/Skap m/LL. inntil 1 tonn",
+        "palleplasser": 6,
+        "isParticipant": "TRUE"
     }
 ]
