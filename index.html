@@ -6,6 +6,7 @@
     <title>Triflex Kart</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css" />
+    <link rel="stylesheet" href="/public/chat.css"> <!-- Lagt til -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -65,6 +66,81 @@
             background-color: #014f8a;
             margin: 0 auto;
         }
+        /* Chat styling */
+        #chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+        }
+        #chat-header {
+            background: #333;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        #chat-input-container {
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+        #chat-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+        }
+        #chat-send {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        /* Chat-knapp */
+        #chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 340px;
+            background: #0078D7;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #chat-toggle:hover {
+            background: #005a9e;
+        }
+        /* Notifikasjonsbadge */
+        #chat-notification {
+            position: fixed;
+            bottom: 65px;
+            right: 365px;
+            background: red;
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 50%;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -82,92 +158,74 @@
         </label>
     </div>
     <div id="map"></div>
+
+    <!-- Chat-knapp og notifikasjon -->
+    <button id="chat-toggle">💬</button>
+    <span id="chat-notification"></span>
+
+    <div id="chat-container">
+        <div id="chat-header">Live Chat</div>
+        <div id="chat-messages"></div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Skriv en melding...">
+            <button id="chat-send">Send</button>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"></script>
     <script>
-        const map = L.map('map', {
-            fullscreenControl: true // Aktiver fullskjermkontroll
-        }).setView([59.9139, 10.7522], 10); // Oslo-koordinater
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
-
+        const map = L.map('map', { fullscreenControl: true }).setView([59.9139, 10.7522], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
         let markers = [];
-
         function createCustomPinIcon(logoUrl) {
             return L.divIcon({
                 className: 'custom-pin',
-                html: `
-                    <div>
-                        <div class="pin-logo">
-                            <img src="${logoUrl}" alt="Logo">
-                        </div>
-                        <div class="pin-line"></div>
-                    </div>
-                `,
+                html: `<div><div class="pin-logo"><img src="${logoUrl}" alt="Logo"></div><div class="pin-line"></div></div>`,
                 iconSize: [30, 50],
                 iconAnchor: [15, 50],
                 popupAnchor: [0, -40],
             });
         }
-
-        function formatTimestamp(timestamp) {
-            if (!timestamp) return "Ukjent tid";
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
-        }
-
         async function loadPositions() {
             try {
                 const response = await fetch('/api/positions');
                 const data = await response.json();
-
-                // Filtrer data basert på "activeToday" og "isParticipant"
                 const activeToday = document.getElementById('activeToday').checked;
                 const selectedCompany = document.getElementById('company-filter').value;
-
-                const filteredData = data.filter(vehicle => {
-                    const matchesCompany = selectedCompany === 'all' || vehicle.company === selectedCompany;
-                    const isActiveToday = !activeToday || vehicle.isActiveToday;
-                    const isParticipant = vehicle.isParticipant;
-                    return matchesCompany && isActiveToday && isParticipant;
-                });
-
-                // Fjern gamle markører
+                const filteredData = data.filter(vehicle => (selectedCompany === 'all' || vehicle.company === selectedCompany) && (!activeToday || vehicle.isActiveToday) && vehicle.isParticipant);
                 markers.forEach(marker => marker.remove());
                 markers = [];
-
-                // Legg til nye markører
                 filteredData.forEach(vehicle => {
                     if (vehicle.latitude && vehicle.longitude) {
                         const icon = createCustomPinIcon(vehicle.logo);
-
-                        const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon });
-                        marker.bindPopup(
-                            `<b>Navn:</b> ${vehicle.name}<br>
-                             <b>Type:</b> ${vehicle.type}<br>
-                             <b>Palleplasser:</b> ${vehicle.palleplasser}<br>
-                             <b>Klokkeslett:</b> ${formatTimestamp(vehicle.time)}<br>
-                             <b>Selskap:</b> ${vehicle.company}`
-                        );
+                        const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon }).bindPopup(`<b>Navn:</b> ${vehicle.name}<br><b>Type:</b> ${vehicle.type}<br><b>Palleplasser:</b> ${vehicle.palleplasser}<br><b>Selskap:</b> ${vehicle.company}`);
                         marker.addTo(map);
                         markers.push(marker);
                     }
                 });
-            } catch (error) {
-                console.error('Error loading positions:', error);
-            }
+            } catch (error) { console.error('Error loading positions:', error); }
         }
-
         document.getElementById('company-filter').addEventListener('change', loadPositions);
         document.getElementById('activeToday').addEventListener('change', loadPositions);
-
         loadPositions();
-        setInterval(loadPositions, 10000); // Oppdater hvert 10. sekund
+        setInterval(loadPositions, 10000);
+
+        // Chat-toggle logikk
+        document.getElementById('chat-toggle').addEventListener('click', () => {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+            document.getElementById('chat-notification').style.display = 'none';
+        });
+
+        document.getElementById('chat-header').addEventListener('click', () => {
+            document.getElementById('chat-container').style.display = 'none';
+        });
     </script>
+    <script src="/public/chat.js"></script> <!-- Lagt til -->
 </body>
 </html>
+
+
 
 
 
