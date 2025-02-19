@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="no">
 <head>
     <meta charset="UTF-8">
@@ -17,8 +17,6 @@
         #map {
             height: calc(100vh - 100px);
             width: 100%;
-            position: relative;
-            z-index: 0;
         }
         h1 {
             text-align: center;
@@ -81,8 +79,6 @@
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             flex-direction: column;
-            z-index: 1000;
-            display: none;
         }
         #chat-header {
             background: #333;
@@ -129,7 +125,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1001;
         }
         #chat-toggle:hover {
             background: #005a9e;
@@ -145,7 +140,6 @@
             padding: 4px 8px;
             border-radius: 50%;
             display: none;
-            z-index: 1002;
         }
     </style>
 </head>
@@ -164,8 +158,11 @@
         </label>
     </div>
     <div id="map"></div>
+
+    <!-- Chat-knapp og notifikasjon -->
     <button id="chat-toggle">💬</button>
     <span id="chat-notification"></span>
+
     <div id="chat-container">
         <div id="chat-header">Live Chat</div>
         <div id="chat-messages"></div>
@@ -174,12 +171,60 @@
             <button id="chat-send">Send</button>
         </div>
     </div>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="/public/chat.js"></script>
-    <link rel="stylesheet" href="/public/map.css">
-</body>
-</html>
 
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map', { fullscreenControl: true }).setView([59.9139, 10.7522], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+        let markers = [];
+        function createCustomPinIcon(logoUrl) {
+            return L.divIcon({
+                className: 'custom-pin',
+                html: <div><div class="pin-logo"><img src="${logoUrl}" alt="Logo"></div><div class="pin-line"></div></div>,
+                iconSize: [30, 50],
+                iconAnchor: [15, 50],
+                popupAnchor: [0, -40],
+            });
+        }
+        async function loadPositions() {
+            try {
+                const response = await fetch('/api/positions');
+                const data = await response.json();
+                const activeToday = document.getElementById('activeToday').checked;
+                const selectedCompany = document.getElementById('company-filter').value;
+                const filteredData = data.filter(vehicle => (selectedCompany === 'all' || vehicle.company === selectedCompany) && (!activeToday || vehicle.isActiveToday) && vehicle.isParticipant);
+                markers.forEach(marker => marker.remove());
+                markers = [];
+                filteredData.forEach(vehicle => {
+                    if (vehicle.latitude && vehicle.longitude) {
+                        const icon = createCustomPinIcon(vehicle.logo);
+                        const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon }).bindPopup(<b>Navn:</b> ${vehicle.name}<br><b>Type:</b> ${vehicle.type}<br><b>Palleplasser:</b> ${vehicle.palleplasser}<br><b>Klokkeslett:</b> ${formatTimestamp(vehicle.time)}<br><b>Selskap:</b> ${vehicle.company});
+                        marker.addTo(map);
+                        markers.push(marker);
+                    }
+                });
+            } catch (error) { console.error('Error loading positions:', error); }
+        }
+        document.getElementById('company-filter').addEventListener('change', loadPositions);
+        document.getElementById('activeToday').addEventListener('change', loadPositions);
+        loadPositions();
+        setInterval(loadPositions, 10000);
+
+        // Chat-toggle logikk
+        document.getElementById('chat-toggle').addEventListener('click', () => {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+            document.getElementById('chat-notification').style.display = 'none';
+        });
+
+        document.getElementById('chat-header').addEventListener('click', () => {
+            document.getElementById('chat-container').style.display = 'none';
+        });
+    </script>
+    <script src="/public/chat.js"></script> <!-- Lagt til -->
+    <link rel="stylesheet" href="/public/map.css"> <!-- Nytt: Kart-stil -->
+</body>
+</html> 
 
 
 
