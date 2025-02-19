@@ -8,7 +8,7 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    display: none; /* Starter skjult */
+    display: flex; /* Sørger for at den alltid er synlig */
     flex-direction: column;
     z-index: 1000; /* Sørger for at den ligger over kartet */
 }
