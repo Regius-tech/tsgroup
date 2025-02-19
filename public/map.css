@@ -1,18 +1,17 @@
 #map {
     position: relative !important; /* Sørger for at z-index fungerer */
-    z-index: 1 !important; /* Holder kartet bak */
+    z-index: 0 !important; /* Holder kartet bak alt annet */
 }
 
 .leaflet-container {
-    z-index: 1 !important;
+    position: relative !important;
+    z-index: 0 !important;
 }
 
-/* Sikrer at kartets overlay-elementer ikke blokkerer andre elementer */
-.leaflet-control {
-    z-index: 10 !important;
+#chat-toggle {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 9999 !important; /* Sikrer at den er øverst */
 }
 
-/* Justerer z-index for eventuelle kartlag som kan være problematiske */
-.leaflet-pane {
-    z-index: 5 !important;
-}
