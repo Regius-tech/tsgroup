@@ -17,6 +17,8 @@
         #map {
             height: calc(100vh - 100px);
             width: 100%;
+            position: relative; /* Lagt til for å sikre overlapp */
+            z-index: 1; /* Sørger for at kartet ikke dekker chatten */
         }
         h1 {
             text-align: center;
@@ -34,10 +36,8 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
-        }
-        .filter-container label {
-            margin-right: 10px;
-            font-weight: bold;
+            z-index: 2; /* Sørger for at filteret vises over kartet */
+            position: relative;
         }
         .leaflet-marker-icon {
             background-size: contain;
@@ -79,6 +79,8 @@
             border-radius: 5px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             flex-direction: column;
+            display: none; /* Starter skjult */
+            z-index: 10; /* Sørger for at chatten er over kartet */
         }
         #chat-header {
             background: #333;
@@ -125,6 +127,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 10; /* Sørger for at chat-knappen er over kartet */
         }
         #chat-toggle:hover {
             background: #005a9e;
@@ -140,6 +143,7 @@
             padding: 4px 8px;
             border-radius: 50%;
             display: none;
+            z-index: 10;
         }
     </style>
 </head>
@@ -180,7 +184,7 @@
         function createCustomPinIcon(logoUrl) {
             return L.divIcon({
                 className: 'custom-pin',
-                html: <div><div class="pin-logo"><img src="${logoUrl}" alt="Logo"></div><div class="pin-line"></div></div>,
+                html: `<div><div class="pin-logo"><img src="${logoUrl}" alt="Logo"></div><div class="pin-line"></div></div>`,
                 iconSize: [30, 50],
                 iconAnchor: [15, 50],
                 popupAnchor: [0, -40],
@@ -198,31 +202,22 @@
                 filteredData.forEach(vehicle => {
                     if (vehicle.latitude && vehicle.longitude) {
                         const icon = createCustomPinIcon(vehicle.logo);
-                        const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon }).bindPopup(<b>Navn:</b> ${vehicle.name}<br><b>Type:</b> ${vehicle.type}<br><b>Palleplasser:</b> ${vehicle.palleplasser}<br><b>Klokkeslett:</b> ${formatTimestamp(vehicle.time)}<br><b>Selskap:</b> ${vehicle.company});
+                        const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon }).bindPopup(`<b>Navn:</b> ${vehicle.name}<br><b>Type:</b> ${vehicle.type}<br><b>Palleplasser:</b> ${vehicle.palleplasser}<br><b>Selskap:</b> ${vehicle.company}`);
                         marker.addTo(map);
                         markers.push(marker);
                     }
                 });
             } catch (error) { console.error('Error loading positions:', error); }
         }
-        document.getElementById('company-filter').addEventListener('change', loadPositions);
-        document.getElementById('activeToday').addEventListener('change', loadPositions);
-        loadPositions();
-        setInterval(loadPositions, 10000);
-
-        // Chat-toggle logikk
         document.getElementById('chat-toggle').addEventListener('click', () => {
             const chatContainer = document.getElementById('chat-container');
             chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
             document.getElementById('chat-notification').style.display = 'none';
         });
-
-        document.getElementById('chat-header').addEventListener('click', () => {
-            document.getElementById('chat-container').style.display = 'none';
-        });
+        loadPositions();
+        setInterval(loadPositions, 10000);
     </script>
-    <script src="/public/chat.js"></script> <!-- Lagt til -->
-    <link rel="stylesheet" href="/public/map.css"> <!-- Nytt: Kart-stil -->
+    <script src="/public/chat.js"></script>
 </body>
 </html> 
 
