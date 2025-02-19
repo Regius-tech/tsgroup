@@ -10,6 +10,7 @@
     overflow: hidden;
     display: none; /* Starter skjult */
     flex-direction: column;
+    z-index: 1000; /* Sørger for at den ligger over kartet */
 }
 
 /* Chat header */
