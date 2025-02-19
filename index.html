@@ -145,6 +145,10 @@
             display: none;
             z-index: 10;
         }
+        /* Fullskjermknapp */
+        .leaflet-control-fullscreen {
+            z-index: 1000; /* Sørger for at fullskjermknappen er over kartet */
+        }
     </style>
 </head>
 <body>
@@ -202,7 +206,7 @@
                 filteredData.forEach(vehicle => {
                     if (vehicle.latitude && vehicle.longitude) {
                         const icon = createCustomPinIcon(vehicle.logo);
-                        const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon }).bindPopup(`<b>Navn:</b> ${vehicle.name}<br><b>Type:</b> ${vehicle.type}<br><b>Palleplasser:</b> ${vehicle.palleplasser}<br><b>Selskap:</b> ${vehicle.company}`);
+                        const marker = L.marker([vehicle.latitude, vehicle.longitude], { icon }).bindPopup(`<b>Navn:</b> ${vehicle.name}<br><b>Type:</b> ${vehicle.type}<br><b>Palleplasser:</b> ${vehicle.palleplasser}<br><b>Klokkeslett:</b> ${formatTimestamp(vehicle.time)}<br><b>Selskap:</b> ${vehicle.company}`);
                         marker.addTo(map);
                         markers.push(marker);
                     }
