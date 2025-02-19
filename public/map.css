@@ -1,0 +1,8 @@
+#map {
+    position: relative !important; /* Sørger for at z-index fungerer */
+    z-index: 1 !important; /* Holder kartet bak */
+}
+
+.leaflet-container {
+    z-index: 1 !important;
+}
