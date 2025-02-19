@@ -1,5 +1,7 @@
 // chat.js - Håndterer chat-funksjonaliteten
 
+const socket = io(); // Initialiserer WebSocket-tilkoblingen
+
 const chatContainer = document.getElementById("chat-container");
 const chatMessages = document.getElementById("chat-messages");
 const chatInput = document.getElementById("chat-input");
@@ -28,14 +30,17 @@ function sendMessage() {
     const message = chatInput.value.trim();
     if (message === "") return;
     
+    socket.emit('chatMessage', message); // Send melding til server via WebSocket
     displayMessage("Du", message);
     chatInput.value = "";
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
-    // TODO: Send melding til server via WebSocket eller API
 }
 
-// Simulert mottak av melding (kan byttes ut med WebSocket/API)
+// Mottak av melding fra server
+socket.on('chatMessage', (msg) => {
+    receiveMessage("Annen bruker", msg);
+});
+
 function receiveMessage(user, message) {
     displayMessage(user, message);
     if (chatContainer.classList.contains("hidden")) {
