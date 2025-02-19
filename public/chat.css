@@ -10,7 +10,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    z-index: 9999 !important;
+    z-index: 9999 !important; /* Sørger for at den alltid er øverst */
 }
 
 /* Chat header */
@@ -86,7 +86,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999 !important;
+    z-index: 9999 !important; /* Sikrer at knappen er øverst */
 }
 
 #chat-toggle:hover {

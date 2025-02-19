@@ -8,28 +8,28 @@ const apiConfigurations = [
         apiKey: process.env.API_KEY_1,
         logo: '/logo1.png',
         company: 'Transportsentralen Oslo',
-        vehicleFile: 'tsoslo.json',
+        vehicleFile: 'tsoslo.json', // Filen for bilinformasjon
     },
     {
         url: process.env.API_URL_2,
         apiKey: process.env.API_KEY_2,
         logo: '/logo2.png',
         company: 'TS Oslo Budtjenester',
-        vehicleFile: 'tsoslobud.json',
+        vehicleFile: 'tsoslobud.json', // Filen for bilinformasjon
     },
     {
         url: process.env.API_URL_3,
         apiKey: process.env.API_KEY_3,
         logo: '/logo3.png',
         company: 'Moss Transportforum',
-        vehicleFile: 'mtf.json',
+        vehicleFile: 'mtf.json', // Filen for bilinformasjon
     },
     {
         url: process.env.API_URL_4,
         apiKey: process.env.API_KEY_4,
         logo: '/logo4.png',
         company: 'Blå Kurér',
-        vehicleFile: 'blakurer.json',
+        vehicleFile: 'blakurer.json', // Filen for bilinformasjon
     },
 ];
 
@@ -58,10 +58,12 @@ module.exports = async (req, res) => {
 
         for (const config of apiConfigurations) {
             try {
+                // Les bilinformasjon fra den aktuelle JSON-filen
                 const filePath = path.join(process.cwd(), 'data', config.vehicleFile);
                 const fileContents = await fs.readFile(filePath, 'utf8');
                 const vehiclesArray = JSON.parse(fileContents);
 
+                // Gjør bilinformasjonen om til et oppslag (object) basert på kjøretøynummer
                 const vehiclesData = vehiclesArray.reduce((acc, vehicle) => {
                     acc[vehicle.number] = vehicle;
                     return acc;
@@ -81,6 +83,7 @@ module.exports = async (req, res) => {
                 const data = await response.json();
                 console.log(`Data fetched from ${config.url}:`, data);
 
+                // Legg til logoer, firma og kjøretøyinfo
                 const vehiclesWithLogos = data.map(vehicle => {
                     const vehicleNumber = ensureString(vehicle.number);
                     const vehicleData = vehiclesData[vehicleNumber] || {};
