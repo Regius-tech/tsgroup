@@ -6,3 +6,13 @@
 .leaflet-container {
     z-index: 1 !important;
 }
+
+/* Sikrer at kartets overlay-elementer ikke blokkerer andre elementer */
+.leaflet-control {
+    z-index: 10 !important;
+}
+
+/* Justerer z-index for eventuelle kartlag som kan være problematiske */
+.leaflet-pane {
+    z-index: 5 !important;
+}
