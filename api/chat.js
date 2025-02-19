@@ -10,7 +10,7 @@ module.exports = (req, res) => {
             console.log("Ny bruker tilkoblet");
 
             socket.on("chatMessage", (msg) => {
-                console.log("Mottatt melding på server:", msg); // Feilsøkingsmelding
+                console.log("Mottatt melding på server:", msg);
                 io.emit("chatMessage", msg);
             });
 
