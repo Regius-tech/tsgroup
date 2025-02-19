@@ -30,6 +30,7 @@ function sendMessage() {
     const message = chatInput.value.trim();
     if (message === "") return;
     
+    console.log("Sender melding:", message); // Feilsøkingsmelding
     socket.emit('chatMessage', message); // Send melding til server via WebSocket
     displayMessage("Du", message);
     chatInput.value = "";
@@ -38,6 +39,7 @@ function sendMessage() {
 
 // Mottak av melding fra server
 socket.on('chatMessage', (msg) => {
+    console.log("Mottatt melding:", msg); // Feilsøkingsmelding
     receiveMessage("Annen bruker", msg);
 });
 

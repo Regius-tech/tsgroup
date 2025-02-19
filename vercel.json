@@ -6,6 +6,10 @@
       "dest": "api/positions.js"
     },
     {
+      "src": "/api/chat",
+      "dest": "api/chat.js"
+    },
+    {
       "src": "/logo(.*)",
       "dest": "/public/logo$1"
     },
@@ -16,6 +20,7 @@
   ],
   "builds": [
     { "src": "api/positions.js", "use": "@vercel/node" },
+    { "src": "api/chat.js", "use": "@vercel/node" },
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "public/**", "use": "@vercel/static" }
   ]

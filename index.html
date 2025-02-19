@@ -181,6 +181,8 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="/socket.io/socket.io.js"></script> <!-- Lagt til -->
+    <script src="/public/chat.js"></script>
     <script>
         const map = L.map('map', { fullscreenControl: true }).setView([59.9139, 10.7522], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
@@ -221,9 +223,8 @@
         loadPositions();
         setInterval(loadPositions, 10000);
     </script>
-    <script src="/public/chat.js"></script>
 </body>
-</html> 
+</html>
 
 
 
