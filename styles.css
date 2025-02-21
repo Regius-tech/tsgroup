@@ -1,14 +1,83 @@
+/* === Generell styling === */
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0;
     text-align: center;
-    background-color: #f4f4f4;
+    background: linear-gradient(135deg, #f3f4f6, #dce1e7);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+/* === Login-wrapper for å sentrere === */
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* === Login-boksen === */
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+/* === Microsoft logo === */
+.ms-logo {
+    width: 120px;
+    margin-bottom: 20px;
+}
+
+/* === Tittel og tekst === */
 h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
     color: #333;
 }
 
+p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* === Login-knapp === */
+#login-btn {
+    background: #2F2F2F;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    transition: 0.3s ease-in-out;
+}
+
+#login-btn img {
+    width: 24px;
+    margin-right: 10px;
+}
+
+#login-btn:hover {
+    background: #000;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* === GRID STYLING FOR BILER === */
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -27,3 +96,4 @@ h1 {
     max-width: 100px;
     margin-bottom: 10px;
 }
+
