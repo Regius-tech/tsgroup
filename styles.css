@@ -1,16 +1,16 @@
-/* === Generell styling === */
+/* Generell styling */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    background: linear-gradient(135deg, #f3f4f6, #dce1e7);
-    height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
+    margin: 0;
 }
 
-/* === Login-wrapper for sentrering === */
-.login-wrapper {
+/* Login-container */
+.login-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -18,64 +18,46 @@ body {
     height: 100%;
 }
 
-/* === Login-boksen === */
+/* Login-boks */
 .login-box {
     background: white;
     padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     text-align: center;
     max-width: 400px;
     width: 100%;
 }
 
-/* === Microsoft logo === */
+/* Microsoft-logo */
 .ms-logo {
-    width: 150px;
+    width: 150px; /* Juster størrelsen */
     margin-bottom: 20px;
 }
 
-/* === Tittel og tekst === */
+/* Tittel */
 h1 {
     font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 10px;
     color: #333;
-}
-
-p {
-    font-size: 16px;
-    color: #555;
     margin-bottom: 20px;
 }
 
-/* === Login-knapp === */
+/* Logg inn-knapp */
 #login-btn {
-    background: #2F2F2F;
+    background-color: #0078D4; /* Microsoft blå */
     color: white;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 12px 20px;
     border: none;
-    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
-    transition: 0.3s ease-in-out;
-}
-
-#login-btn img {
-    width: 24px;
-    margin-right: 10px;
+    transition: background 0.3s;
 }
 
 #login-btn:hover {
-    background: #000;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    background-color: #005A9E;
 }
-
 /* === GRID STYLING FOR BILER === */
 .grid-container {
     display: grid;
