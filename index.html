@@ -4,17 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Triflex Kart</title>
-<div style="text-align: center; margin-bottom: 10px;">
-    <a href="cars.html" style="
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #072D60;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        font-weight: bold;
-    ">Se bilpark</a>
-</div>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css" />
     <style>
@@ -27,13 +16,29 @@
             height: calc(100vh - 100px);
             width: 100%;
         }
-        h1 {
-            text-align: center;
-            margin: 0;
-            padding: 10px 0;
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
             background-color: #333333;
             color: white;
+        }
+        h1 {
+            margin: 0;
             font-size: 24px;
+        }
+        .header-logo {
+            height: 40px; /* Juster logoens høyde */
+        }
+        .button-container a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #072D60;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
         }
         .filter-container {
             padding: 10px;
@@ -81,7 +86,10 @@
 <body>
     <div class="header-container">
         <h1>Triflex Kart</h1>
-        <a href="cars.html">Se bilpark</a>
+        <img src="logo.png" alt="Logo" class="header-logo"> <!-- Sørg for at logo.png eksisterer -->
+        <div class="button-container">
+            <a href="cars.html">Se bilpark</a>
+        </div>
     </div>
     <div class="filter-container">
         <label for="company-filter">Filtrer etter selskap:</label>
@@ -182,6 +190,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
