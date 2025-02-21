@@ -22,12 +22,8 @@
       "dest": "/public/$1"
     },
     {
-      "src": "/(.*\\.html)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "src": "/",
+      "dest": "/public/index.html"
     }
   ],
   "builds": [
@@ -35,6 +31,7 @@
     { "src": "public/**", "use": "@vercel/static" }
   ]
 }
+
 
 
 
