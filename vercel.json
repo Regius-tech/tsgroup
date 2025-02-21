@@ -9,6 +9,9 @@
       "src": "/logo(.*)",
       "dest": "/public/logo$1"
     },
+    { "src": "/cars.html", 
+      "dest": "/public/cars.html"
+    },
     {
       "src": "/(.*\\.(png|jpg|jpeg|gif|svg))",
       "dest": "/public/$1"
