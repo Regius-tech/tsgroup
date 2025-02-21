@@ -1,8 +1,7 @@
 /* === Generell styling === */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    text-align: center;
     background: linear-gradient(135deg, #f3f4f6, #dce1e7);
     height: 100vh;
     display: flex;
@@ -10,7 +9,7 @@ body {
     align-items: center;
 }
 
-/* === Login-wrapper for å sentrere === */
+/* === Login-wrapper for sentrering === */
 .login-wrapper {
     display: flex;
     justify-content: center;
@@ -24,7 +23,7 @@ body {
     background: white;
     padding: 40px;
     border-radius: 12px;
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
     text-align: center;
     max-width: 400px;
     width: 100%;
@@ -32,13 +31,13 @@ body {
 
 /* === Microsoft logo === */
 .ms-logo {
-    width: 120px;
+    width: 150px;
     margin-bottom: 20px;
 }
 
 /* === Tittel og tekst === */
 h1 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     margin-bottom: 10px;
     color: #333;

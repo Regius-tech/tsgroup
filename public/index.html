@@ -3,30 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Triflex Kart – Logg inn</title>
+    <title>Logg inn med Microsoft</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-
     <div class="login-wrapper">
         <div class="login-box">
-            <img src="microsoft-logo.png" alt="Microsoft Logo" class="ms-logo">
+            <img src="microsoft365.png" alt="Microsoft Logo" class="ms-logo">
             <h1>Logg inn med Microsoft</h1>
-            <p>Få tilgang til Triflex Kart ved å bruke din Microsoft-konto.</p>
+            <p>Bruk din Microsoft-konto for å fortsette.</p>
             <button id="login-btn">
-                <img src="ms-icon.svg" alt="Microsoft Icon"> Fortsett med Microsoft
+                <img src="ms-icon.png" alt="Microsoft Icon"> Fortsett med Microsoft
             </button>
         </div>
     </div>
-
     <script>
         document.getElementById("login-btn").addEventListener("click", function() {
             window.location.href = "/api/auth/signin";
         });
     </script>
-
 </body>
 </html>
+
 
