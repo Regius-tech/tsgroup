@@ -3,18 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilpark – TS Group</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Biloversikt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .filter-container, .search-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .filter-container select, .search-container input {
+            padding: 8px;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #072D60;
+            color: white;
+            cursor: pointer;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #072D60;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Vår bilpark</h1>
-    </header>
+    <div class="container">
+        <a href="index.html" class="back-button">Tilbake til kartet</a>
+        <h1>Biloversikt</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Søk på bil...">
+        </div>
+        <div class="filter-container">
+            <label for="company-filter">Filtrer etter selskap:</label>
+            <select id="company-filter">
+                <option value="all">Alle</option>
+            </select>
+            <label for="type-filter">Filtrer etter type:</label>
+            <select id="type-filter">
+                <option value="all">Alle</option>
+            </select>
+            <label for="date-filter">Velg dato:</label>
+            <input type="date" id="date-filter">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Navn</th>
+                    <th onclick="sortTable(1)">Type</th>
+                    <th onclick="sortTable(2)">Palleplasser</th>
+                    <th onclick="sortTable(3)">Selskap</th>
+                    <th onclick="sortTable(4)">Dato & Tid</th>
+                </tr>
+            </thead>
+            <tbody id="vehicleTableBody">
+            </tbody>
+        </table>
+    </div>
+    <script>
+        async function loadVehicles() {
+            const response = await fetch('/api/positions');
+            const data = await response.json();
+            
+            const tableBody = document.getElementById('vehicleTableBody');
+            tableBody.innerHTML = '';
 
-    <main>
-        <div id="car-list" class="grid-container"></div>
-    </main>
+            data.filter(vehicle => vehicle.isParticipant).forEach(vehicle => {
+                const row = `<tr>
+                    <td>${vehicle.name}</td>
+                    <td>${vehicle.type}</td>
+                    <td>${vehicle.palleplasser}</td>
+                    <td>${vehicle.company}</td>
+                    <td>${new Date(vehicle.time).toLocaleString('no-NO')}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
 
-    <script src="cars.js"></script>
+        function sortTable(columnIndex) {
+            const table = document.querySelector("table");
+            const rows = Array.from(table.rows).slice(1);
+            const sortedRows = rows.sort((a, b) => 
+                a.cells[columnIndex].innerText.localeCompare(b.cells[columnIndex].innerText)
+            );
+            sortedRows.forEach(row => table.appendChild(row));
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll("#vehicleTableBody tr").forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
+            });
+        });
+
+        loadVehicles();
+    </script>
 </body>
 </html>
+
+
