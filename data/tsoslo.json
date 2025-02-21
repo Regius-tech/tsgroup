@@ -540,7 +540,7 @@
         "number": 187901,
         "name": "Palle Sørensen",
         "type": "Skapvogn 3-akslet",
-        "palleplasser": 21,
+        "palleplasser": 19,
         "isParticipant": "TRUE"
     },
     {
@@ -548,7 +548,7 @@
         "number": 258001,
         "name": "Roger Krokan",
         "type": "Skapvogn 3-akslet",
-        "palleplasser": 21,
+        "palleplasser": 18,
         "isParticipant": "TRUE"
     },
     {
@@ -563,7 +563,7 @@
         "id": 114,
         "number": 224801,
         "name": "Ronny Ruud",
-        "type": "Skapvogn 2-4 tonn",
+        "type": "2 Akslet kranbil 6,1-12 tm",
         "palleplasser": 6,
         "isParticipant": "TRUE"
     },
@@ -571,7 +571,7 @@
         "id": 120,
         "number": 253001,
         "name": "Ole Petter Lomsnes",
-        "type": "Kranbil 4-akslet",
+        "type": "4 Akslet kranbil 31,1-40 tm",
         "palleplasser": 15,
         "isParticipant": "TRUE"
     },

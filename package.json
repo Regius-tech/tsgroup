@@ -5,9 +5,7 @@
     "start": "vercel dev"
   },
   "dependencies": {
-    "node-fetch": "^3.3.0",
-    "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1"
+    "node-fetch": "^3.3.0"
   },
   "devDependencies": {
     "vercel": "^28.0.0"

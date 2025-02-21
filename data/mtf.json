@@ -124,7 +124,7 @@
         "number": "DP49468",
         "name": "ØYSTEIN VESTERENGEN",
         "type": "2 AKSLER SKAP",
-        "palleplasser": "Unknown",
+        "palleplasser": "18",
         "isParticipant": "TRUE"
     },
     {
@@ -244,7 +244,7 @@
         "number": "AY34458",
         "name": "PER IVAR HOLMGREN",
         "type": "3 AKSLER SKAP",
-        "palleplasser": "Unknown",
+        "palleplasser": "21",
         "isParticipant": "TRUE"
     },
     {
@@ -260,7 +260,7 @@
         "number": "AY29082",
         "name": "KIM ÅSEN",
         "type": "BIL + HENGER",
-        "palleplasser": "35,00",
+        "palleplasser": "35",
         "isParticipant": "TRUE"
     },
     {
@@ -356,7 +356,7 @@
         "number": "AE53564",
         "name": "TOM ERIK",
         "type": "TREKKER",
-        "palleplasser": "Unknown",
+        "palleplasser": "33",
         "isParticipant": "TRUE"
     },
     {
@@ -397,7 +397,7 @@
         "name": "OVE OSTORP",
         "type": "Unknown",
         "palleplasser": "Unknown",
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 118,
@@ -485,7 +485,7 @@
         "name": "HKS",
         "type": "VAREBIL",
         "palleplasser": "2",
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 190,
@@ -557,7 +557,7 @@
         "name": "KURT STENRUD",
         "type": "BIL + HENGER",
         "palleplasser": 19,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 236,
@@ -579,8 +579,8 @@
         "id": 240,
         "number": "EB11086",
         "name": "G&M TRANSPORT AS",
-        "type": "Unknown",
-        "palleplasser": "Unknown",
+        "type": "Varebil",
+        "palleplasser": "2",
         "isParticipant": "TRUE"
     },
     {
@@ -795,7 +795,7 @@
         "id": 363,
         "number": "EB65130",
         "name": "G&M TRANSPORT AS",
-        "type": "Unknown",
+        "type": "Varebil",
         "palleplasser": "3",
         "isParticipant": "TRUE"
     },
@@ -988,7 +988,7 @@
         "number": "BD77128",
         "name": "CADDY EHS TRANS.",
         "type": "VAREBIL",
-        "palleplasser": "Unknown",
+        "palleplasser": "2",
         "isParticipant": "TRUE"
     },
     {
@@ -996,7 +996,7 @@
         "number": "DR73464",
         "name": "KIM SOLLI",
         "type": "2 AKSLER SKAP",
-        "palleplasser": "Unknown",
+        "palleplasser": "18",
         "isParticipant": "TRUE"
     },
     {
@@ -1092,7 +1092,7 @@
         "number": "EC57279",
         "name": "MORRIS INVEST AS",
         "type": "VAREBIL",
-        "palleplasser": "Unknown",
+        "palleplasser": "2",
         "isParticipant": "TRUE"
     },
     {
@@ -1109,7 +1109,7 @@
         "name": "DAG HENNING",
         "type": "TREKKER",
         "palleplasser": "33",
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 495,
@@ -1141,7 +1141,7 @@
         "name": "NIPPON TREKKER MED TRUCK",
         "type": "SEMITRAILER",
         "palleplasser": "33",
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 502,
@@ -1157,7 +1157,7 @@
         "name": "NIPPON BIL M/MOFFETT",
         "type": "SEMITRAILER",
         "palleplasser": 33,
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 512,
@@ -1213,7 +1213,7 @@
         "name": "PER ØYVIND SVEUM",
         "type": "Unknown",
         "palleplasser": "Unknown",
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     },
     {
         "id": 588,
@@ -1221,6 +1221,6 @@
         "name": "NIPPON TREKKER",
         "type": "SEMITRAILER",
         "palleplasser": "33",
-        "isParticipant": "TRUE"
+        "isParticipant": "FALSE"
     }
 ]
