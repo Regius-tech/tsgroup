@@ -1,3 +1,15 @@
+<script>
+    fetch('/api/auth/me')
+        .then(res => res.json())
+        .then(user => {
+            if (!user.authenticated) {
+                window.location.href = "/index.html";
+            }
+        })
+        .catch(() => {
+            window.location.href = "/index.html";
+        });
+</script>
 <!DOCTYPE html>
 <html lang="no">
 <head>

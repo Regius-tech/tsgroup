@@ -9,16 +9,21 @@
       "src": "/logo(.*)",
       "dest": "/public/logo$1"
     },
-    { "src": "/cars.html", 
+    {
+      "src": "/cars",
       "dest": "/public/cars.html"
     },
     {
-      "src": "/(.*\\.(png|jpg|jpeg|gif|svg))",
+      "src": "/map",
+      "dest": "/public/map.html"
+    },
+    {
+      "src": "/(.*\\.(png|jpg|jpeg|gif|svg|css|js))",
       "dest": "/public/$1"
     },
     {
       "src": "/(.*\\.html)",
-      "dest": "/$1"
+      "dest": "/public/$1"
     },
     {
       "src": "/(.*)",
@@ -27,7 +32,6 @@
   ],
   "builds": [
     { "src": "api/positions.js", "use": "@vercel/node" },
-    { "src": "index.html", "use": "@vercel/static" },
     { "src": "public/**", "use": "@vercel/static" }
   ]
 }
