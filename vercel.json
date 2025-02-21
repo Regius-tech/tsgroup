@@ -10,6 +10,10 @@
       "dest": "/public/logo$1"
     },
     {
+      "src": "/(.*\\.(png|jpg|jpeg|gif|svg))",
+      "dest": "/public/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
