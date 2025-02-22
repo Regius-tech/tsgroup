@@ -32,10 +32,12 @@ body {
 /* Container for innloggingsboksen */
 .login-container {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
+    height: 100vh;
+    position: relative;
+    top: -10px; /* Flytter alt litt høyere */
 }
 
 /* Selve boksen */
@@ -48,6 +50,8 @@ body {
     text-align: center;
     max-width: 400px; /* Større boks */
     width: 100%;
+    position: relative;
+    top: -10px; /* Flytter boksen opp */
 }
 
 /* Microsoft-logo */
