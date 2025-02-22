@@ -7,7 +7,7 @@
     },
     {
       "src": "/api/positions",
-      "dest": "api/positions.js"
+      "dest": "/api/positions.js"
     },
     {
       "src": "/logo(.*)",
@@ -30,8 +30,8 @@
       "dest": "/public/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "src": "/",
+      "dest": "/public/index.html"
     }
   ],
   "builds": [
@@ -40,6 +40,7 @@
     { "src": "public/**", "use": "@vercel/static" }
   ]
 }
+
 
 
 
