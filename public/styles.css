@@ -20,8 +20,8 @@ body {
 
 /* Triflex-logo på toppen */
 .triflex-logo {
-    width: 180px;
-    margin-bottom: 10px;
+    width: 220px;
+    margin-bottom: 30px;
 }
 
 /* Skriftlex-logo under Triflex-logo */
@@ -52,7 +52,7 @@ body {
 
 /* Microsoft-logo */
 .ms-logo {
-    width: 120px;
+    width: 220px;
     display: block;
     margin: 0 auto 15px auto;
 }
@@ -86,7 +86,7 @@ body {
 }
 
 .company-logos img {
-    width: 80px;
+    width: 180px;
 }
 
 
