@@ -9,11 +9,9 @@ export default NextAuth({
       tenantId: process.env.AZURE_AD_TENANT_ID,
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET,
-  callbacks: {
-    async session({ session, token }) {
-      session.user.id = token.sub;
-      return session;
-    },
+  secret: process.env.NEXTAUTH_SECRET,  // Legg til en sikkerhetsnøkkel i .env
+  pages: {
+    signIn: "/",
   },
 });
+
