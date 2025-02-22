@@ -2,6 +2,10 @@
   "version": 2,
   "routes": [
     {
+      "src": "/api/auth/(.*)",
+      "dest": "/api/auth/[...nextauth].js"
+    },
+    {
       "src": "/api/positions",
       "dest": "api/positions.js"
     },
@@ -22,15 +26,21 @@
       "dest": "/public/$1"
     },
     {
-      "src": "/",
-      "dest": "/public/index.html"
+      "src": "/(.*\\.html)",
+      "dest": "/public/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ],
   "builds": [
     { "src": "api/positions.js", "use": "@vercel/node" },
+    { "src": "api/auth/[...nextauth].js", "use": "@vercel/node" },
     { "src": "public/**", "use": "@vercel/static" }
   ]
 }
+
 
 
 
